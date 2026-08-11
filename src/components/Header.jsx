@@ -1,8 +1,9 @@
 import React from 'react';
 import { Menu, X } from 'lucide-react';
+import SearchBar from './SearchBar';
 import './Header.css';
 
-const Header = () => {
+const Header = ({ onSelectArtist, onSelectEvent }) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const [scrolled, setScrolled] = React.useState(false);
 
@@ -27,6 +28,8 @@ const Header = () => {
             MABRINHENHE <span>ENTRETENIMENTO</span>
           </div>
         </button>
+
+        <SearchBar onSelectArtist={onSelectArtist} onSelectEvent={onSelectEvent} />
 
         <nav className={`nav ${isOpen ? 'nav-open' : ''}`}>
           <button onClick={() => handleNav('inicio')} className="nav-link">Início</button>

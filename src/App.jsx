@@ -35,7 +35,7 @@ function App() {
   if (selectedArtistId) {
     return (
       <div className="app">
-        <Header />
+        <Header onSelectArtist={(id) => { setSelectedEventId(null); setSelectedArtistId(id); }} onSelectEvent={(id) => { setSelectedArtistId(null); setSelectedEventId(id); }} />
         <ArtistPage artistId={selectedArtistId} onBack={() => setSelectedArtistId(null)} />
         <Footer />
       </div>
@@ -45,7 +45,7 @@ function App() {
   if (selectedEventId) {
     return (
       <div className="app">
-        <Header />
+        <Header onSelectArtist={(id) => { setSelectedEventId(null); setSelectedArtistId(id); }} onSelectEvent={(id) => { setSelectedArtistId(null); setSelectedEventId(id); }} />
         <EventPage eventId={selectedEventId} onBack={() => setSelectedEventId(null)} />
         <Footer />
       </div>
@@ -54,7 +54,7 @@ function App() {
 
   return (
     <div className="app">
-      <Header />
+      <Header onSelectArtist={(id) => setSelectedArtistId(id)} onSelectEvent={(id) => setSelectedEventId(id)} />
       <main>
         <Hero />
         <Artists onSelectArtist={(id) => setSelectedArtistId(id)} />
