@@ -17,6 +17,16 @@ function App() {
   const [selectedArtistId, setSelectedArtistId] = useState(null);
   const [selectedEventId, setSelectedEventId] = useState(null);
 
+  React.useEffect(() => {
+    if (path !== '/admin') {
+      fetch('/api/stats/visit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: window.location.pathname }),
+      }).catch(() => {});
+    }
+  }, [path]);
+
   if (path === '/admin') {
     return <Admin />;
   }

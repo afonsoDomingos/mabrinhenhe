@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Mic2, Calendar, LogOut, Plus, Pencil, Trash2, X, Check, Star, Mail, CheckCircle, Clock, XCircle, Home, Image as ImageIcon } from 'lucide-react';
+import { Mic2, Calendar, LogOut, Plus, Pencil, Trash2, X, Check, Star, Mail, CheckCircle, Clock, XCircle, Home, Image as ImageIcon, LayoutDashboard, Eye, MessageSquare } from 'lucide-react';
 import './Admin.css';
 
 const ADMIN_PASSWORD_KEY = 'mabrinhenhe_admin_pw';
@@ -299,11 +299,12 @@ const Admin = () => {
   const [pw, setPw] = useState(() => sessionStorage.getItem(ADMIN_PASSWORD_KEY) || '');
   const [loginInput, setLoginInput] = useState('');
   const [loginError, setLoginError] = useState('');
-  const [tab, setTab] = useState('artists');
+  const [tab, setTab] = useState('dashboard');
   const [artists, setArtists] = useState([]);
   const [events, setEvents] = useState([]);
   const [contacts, setContacts] = useState([]);
   const [gallery, setGallery] = useState([]);
+  const [stats, setStats] = useState({ artists: 0, events: 0, posts: 0, contacts: 0, gallery: 0, visits: 0, recentVisits: [] });
   const [artistModal, setArtistModal] = useState(null); // null | {} | {artist}
   const [eventModal, setEventModal] = useState(null);
   const [galleryModal, setGalleryModal] = useState(null);
@@ -315,16 +316,18 @@ const Admin = () => {
     if (!pw) return;
     setLoading(true);
     try {
-      const [a, e, c, g] = await Promise.all([
+      const [a, e, c, g, st] = await Promise.all([
         fetch('/api/artists').then(r => r.json()),
         fetch('/api/events').then(r => r.json()),
         fetch('/api/contact', { headers: { 'x-admin-password': pw } }).then(r => r.json()),
         fetch('/api/gallery').then(r => r.json()),
+        fetch('/api/stats', { headers: { 'x-admin-password': pw } }).then(r => r.json()),
       ]);
       setArtists(Array.isArray(a) ? a : []);
       setEvents(Array.isArray(e) ? e : []);
       setContacts(Array.isArray(c) ? c : []);
       setGallery(Array.isArray(g) ? g : []);
+      if (st && !st.error) setStats(st);
     } finally {
       setLoading(false);
     }
@@ -421,6 +424,7 @@ const Admin = () => {
         <nav className="sidebar-nav">
           <a href="/" className="sidebar-home-link"><Home size={18}/> Ver Site Principal</a>
           <div style={{ height: '1px', background: 'var(--border-color)', margin: '0.5rem 0' }} />
+          <button className={tab === 'dashboard' ? 'active' : ''} onClick={() => setTab('dashboard')}><LayoutDashboard size={18}/> Dashboard</button>
           <button className={tab === 'artists' ? 'active' : ''} onClick={() => setTab('artists')}><Mic2 size={18}/> Artistas</button>
           <button className={tab === 'events' ? 'active' : ''} onClick={() => setTab('events')}><Calendar size={18}/> Eventos</button>
           <button className={tab === 'gallery' ? 'active' : ''} onClick={() => setTab('gallery')}><ImageIcon size={18}/> Galeria</button>
@@ -438,6 +442,72 @@ const Admin = () => {
 
       {/* Main */}
       <main className="admin-main">
+        {tab === 'dashboard' && (
+          <>
+            <div className="admin-topbar">
+              <h2><LayoutDashboard size={22}/> Visão Geral / Estatísticas</h2>
+            </div>
+            {loading ? <p className="admin-loading">A carregar estatísticas...</p> : (
+              <div className="dashboard-content">
+                <div className="stats-grid">
+                  <div className="stat-card glass">
+                    <div className="stat-icon"><Eye size={24}/></div>
+                    <div className="stat-info">
+                      <span className="stat-value">{stats.visits || 0}</span>
+                      <span className="stat-label">Visitas ao Site</span>
+                    </div>
+                  </div>
+                  <div className="stat-card glass">
+                    <div className="stat-icon"><Mic2 size={24}/></div>
+                    <div className="stat-info">
+                      <span className="stat-value">{artists.length || stats.artists || 0}</span>
+                      <span className="stat-label">Artistas Cadastrados</span>
+                    </div>
+                  </div>
+                  <div className="stat-card glass">
+                    <div className="stat-icon"><Calendar size={24}/></div>
+                    <div className="stat-info">
+                      <span className="stat-value">{events.length || stats.events || 0}</span>
+                      <span className="stat-label">Eventos Registados</span>
+                    </div>
+                  </div>
+                  <div className="stat-card glass">
+                    <div className="stat-icon"><ImageIcon size={24}/></div>
+                    <div className="stat-info">
+                      <span className="stat-value">{gallery.length || stats.gallery || 0}</span>
+                      <span className="stat-label">Fotos na Galeria</span>
+                    </div>
+                  </div>
+                  <div className="stat-card glass">
+                    <div className="stat-icon"><Mail size={24}/></div>
+                    <div className="stat-info">
+                      <span className="stat-value">{contacts.length || stats.contacts || 0}</span>
+                      <span className="stat-label">Candidaturas / Contactos</span>
+                    </div>
+                  </div>
+                  <div className="stat-card glass">
+                    <div className="stat-icon"><MessageSquare size={24}/></div>
+                    <div className="stat-info">
+                      <span className="stat-value">{stats.posts || 0}</span>
+                      <span className="stat-label">Posts na Comunidade</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Quick Shortcuts */}
+                <div className="admin-quick-actions glass" style={{ marginTop: '2rem', padding: '1.5rem', borderRadius: '12px' }}>
+                  <h3 style={{ fontSize: '1rem', marginBottom: '1rem', letterSpacing: '1px' }}>⚡ Ações Rápidas</h3>
+                  <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                    <button className="btn-add" onClick={() => { setTab('artists'); setArtistModal({}); }}><Plus size={16}/> Adicionar Artista</button>
+                    <button className="btn-add" onClick={() => { setTab('events'); setEventModal({}); }}><Plus size={16}/> Criar Evento</button>
+                    <button className="btn-add" onClick={() => { setTab('gallery'); setGalleryModal({}); }}><Plus size={16}/> Adicionar Foto</button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+
         {tab === 'artists' && (
           <>
             <div className="admin-topbar">
