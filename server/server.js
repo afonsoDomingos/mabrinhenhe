@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const artistsRouter = require('./routes/artists');
 const eventsRouter = require('./routes/events');
 const postsRouter = require('./routes/posts');
+const uploadRouter = require('./routes/upload');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use('/api/artists', artistsRouter);
 app.use('/api/events', eventsRouter);
 app.use('/api/posts', postsRouter);
+app.use('/api/upload', uploadRouter);
 
 // Health check
 app.get('/api/health', (req, res) => res.json({ status: 'ok', db: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected' }));

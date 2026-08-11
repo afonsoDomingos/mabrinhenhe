@@ -15,7 +15,34 @@ const api = (url, options = {}, pw) =>
 const ArtistModal = ({ initial, onSave, onClose, pw }) => {
   const [form, setForm] = useState(initial || emptyArtist);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setUploading(true);
+    setError('');
+
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { 'x-admin-password': pw },
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      setForm((prev) => ({ ...prev, imageUrl: data.url }));
+    } catch (err) {
+      setError('Erro no upload da imagem: ' + err.message);
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,14 +73,25 @@ const ArtistModal = ({ initial, onSave, onClose, pw }) => {
           <label>Nome *<input required value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder="Nome do artista" /></label>
           <label>Género *<input required value={form.genre} onChange={e => setForm({...form, genre: e.target.value})} placeholder="Hip-Hop • Afrobeat" /></label>
           <label>Descrição *<textarea required value={form.description} onChange={e => setForm({...form, description: e.target.value})} rows={3} placeholder="Breve bio do artista..." /></label>
-          <label>URL da Imagem<input value={form.imageUrl} onChange={e => setForm({...form, imageUrl: e.target.value})} placeholder="https://..." /></label>
+          
+          <label>Foto do Artista (Cloudinary)
+            <input type="file" accept="image/*" onChange={handleImageUpload} disabled={uploading} />
+            {uploading && <small style={{ color: '#aaa', marginTop: '0.2rem' }}>A carregar foto para o Cloudinary...</small>}
+            {form.imageUrl && (
+              <div style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <img src={form.imageUrl} alt="Preview" style={{ width: 50, height: 50, borderRadius: '50%', objectFit: 'cover', border: '1px solid #444' }} />
+                <small style={{ color: '#888', wordBreak: 'break-all' }}>{form.imageUrl}</small>
+              </div>
+            )}
+          </label>
+
           <label className="checkbox-label">
             <input type="checkbox" checked={form.featured} onChange={e => setForm({...form, featured: e.target.checked})} />
             <span>Artista em Destaque</span>
           </label>
           <div className="modal-actions">
             <button type="button" className="btn-cancel" onClick={onClose}>Cancelar</button>
-            <button type="submit" className="btn-save" disabled={saving}>{saving ? 'A guardar...' : <><Check size={16}/> Guardar</>}</button>
+            <button type="submit" className="btn-save" disabled={saving || uploading}>{saving ? 'A guardar...' : <><Check size={16}/> Guardar</>}</button>
           </div>
         </form>
       </div>
