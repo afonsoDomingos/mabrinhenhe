@@ -11,8 +11,11 @@ const ContactSchema = new mongoose.Schema(
     },
     genre: { type: String, default: '' },
     message: { type: String, required: true },
+    phone: { type: String, default: '' },
     instagram: { type: String, default: '' },
     tiktok: { type: String, default: '' },
+    musicLink: { type: String, default: '' },
+    portfolioLink: { type: String, default: '' },
     status: {
       type: String,
       enum: ['pendente', 'lido', 'aprovado', 'rejeitado'],

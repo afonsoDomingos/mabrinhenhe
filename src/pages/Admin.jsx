@@ -722,12 +722,16 @@ const Admin = () => {
                         </div>
                         <div className="contact-card-meta">
                           <span>{c.email}</span>
+                          {c.phone && <span style={{ color: '#4ade80' }}>WhatsApp: {c.phone}</span>}
                           <span className="contact-type-badge">{c.type}</span>
                           {c.genre && <span>{c.genre}</span>}
                         </div>
                         <p className="contact-message">{c.message}</p>
-                        {(c.instagram || c.tiktok) && (
+                        {(c.instagram || c.tiktok || c.musicLink || c.portfolioLink) && (
                           <div className="contact-socials">
+                            {c.phone && <a href={`https://wa.me/${c.phone.replace(/[^0-9]/g, '')}`} target="_blank" rel="noreferrer" style={{ background: '#25D366', color: '#000', fontWeight: 'bold' }}>WhatsApp 💬</a>}
+                            {c.musicLink && <a href={c.musicLink} target="_blank" rel="noreferrer">🎵 Músicas ↗</a>}
+                            {c.portfolioLink && <a href={c.portfolioLink} target="_blank" rel="noreferrer">📁 Portfólio ↗</a>}
                             {c.instagram && <a href={c.instagram} target="_blank" rel="noreferrer">Instagram ↗</a>}
                             {c.tiktok && <a href={c.tiktok} target="_blank" rel="noreferrer">TikTok ↗</a>}
                           </div>

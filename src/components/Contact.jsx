@@ -126,7 +126,7 @@ const Contact = () => {
             <div className="form-row-2">
               <label>
                 Nome *
-                <input required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="O teu nome" />
+                <input required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="O teu nome / Nome Artístico" />
               </label>
               <label>
                 Email *
@@ -134,17 +134,42 @@ const Contact = () => {
               </label>
             </div>
 
-            {form.type === 'artista' && (
-              <div className="form-row-2">
+            <div className="form-row-2">
+              <label>
+                WhatsApp / Contacto Telefónico
+                <input value={form.phone || ''} onChange={e => setForm({ ...form, phone: e.target.value })} placeholder="+258 84/86/87..." />
+              </label>
+              {form.type === 'artista' && (
                 <label>
                   Género Musical
                   <input value={form.genre} onChange={e => setForm({ ...form, genre: e.target.value })} placeholder="Hip-Hop, Afrobeat, Gospel..." />
                 </label>
-                <label>
-                  Instagram
-                  <input value={form.instagram} onChange={e => setForm({ ...form, instagram: e.target.value })} placeholder="https://instagram.com/..." />
-                </label>
-              </div>
+              )}
+            </div>
+
+            {form.type === 'artista' && (
+              <>
+                <div className="form-row-2">
+                  <label>
+                    Link das Músicas (YouTube / Spotify / Audiomack)
+                    <input value={form.musicLink || ''} onChange={e => setForm({ ...form, musicLink: e.target.value })} placeholder="https://youtube.com/watch?v=..." />
+                  </label>
+                  <label>
+                    Página Artística / Portfólio (Website / Facebook)
+                    <input value={form.portfolioLink || ''} onChange={e => setForm({ ...form, portfolioLink: e.target.value })} placeholder="https://facebook.com/..." />
+                  </label>
+                </div>
+                <div className="form-row-2">
+                  <label>
+                    Instagram
+                    <input value={form.instagram} onChange={e => setForm({ ...form, instagram: e.target.value })} placeholder="https://instagram.com/..." />
+                  </label>
+                  <label>
+                    TikTok
+                    <input value={form.tiktok || ''} onChange={e => setForm({ ...form, tiktok: e.target.value })} placeholder="https://tiktok.com/@..." />
+                  </label>
+                </div>
+              </>
             )}
 
             <label>
