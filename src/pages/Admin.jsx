@@ -595,6 +595,9 @@ const Admin = () => {
           <a href="/" className="sidebar-home-link"><Home size={18}/> Ver Site Principal</a>
           <div style={{ height: '1px', background: 'var(--border-color)', margin: '0.5rem 0' }} />
           <button className={tab === 'dashboard' ? 'active' : ''} onClick={() => setTab('dashboard')}><LayoutDashboard size={18}/> Dashboard</button>
+          <button className={tab === 'visits' ? 'active' : ''} onClick={() => setTab('visits')}>
+            <Eye size={18}/> Registos de Visitas ({stats.visits || 0})
+          </button>
           <button className={tab === 'artists' ? 'active' : ''} onClick={() => setTab('artists')}><Mic2 size={18}/> Artistas</button>
           <button className={tab === 'events' ? 'active' : ''} onClick={() => setTab('events')}><Calendar size={18}/> Eventos</button>
           <button className={tab === 'tracks' ? 'active' : ''} onClick={() => setTab('tracks')}><Music size={18}/> Músicas ({tracks.length})</button>
@@ -627,8 +630,15 @@ const Admin = () => {
                   <div className="stat-card glass">
                     <div className="stat-icon"><Eye size={24}/></div>
                     <div className="stat-info">
+                      <span className="stat-value">{stats.todayVisits || 0}</span>
+                      <span className="stat-label">Visitas de Hoje</span>
+                    </div>
+                  </div>
+                  <div className="stat-card glass">
+                    <div className="stat-icon"><Eye size={24}/></div>
+                    <div className="stat-info">
                       <span className="stat-value">{stats.visits || 0}</span>
-                      <span className="stat-label">Visitas ao Site</span>
+                      <span className="stat-label">Total de Visitas</span>
                     </div>
                   </div>
                   <div className="stat-card glass">
@@ -659,13 +669,48 @@ const Admin = () => {
                       <span className="stat-label">Candidaturas / Contactos</span>
                     </div>
                   </div>
-                  <div className="stat-card glass">
-                    <div className="stat-icon"><MessageSquare size={24}/></div>
-                    <div className="stat-info">
-                      <span className="stat-value">{stats.posts || 0}</span>
-                      <span className="stat-label">Posts na Comunidade</span>
+                </div>
+
+                {/* Recent Visits Realtime Table */}
+                <div className="admin-visits-section glass" style={{ marginTop: '2rem', padding: '1.5rem', borderRadius: '12px' }}>
+                  <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <Eye size={20} /> Últimas Visitas em Tempo Real
+                  </h3>
+                  {(!stats.recentVisits || stats.recentVisits.length === 0) ? (
+                    <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Nenhum registo de visita ainda.</p>
+                  ) : (
+                    <div className="admin-table-wrap">
+                      <table className="admin-table">
+                        <thead>
+                          <tr>
+                            <th>Data & Hora</th>
+                            <th>Localização</th>
+                            <th>Dispositivo</th>
+                            <th>Página / Perfil Consultado</th>
+                            <th>IP</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {stats.recentVisits.map((v) => (
+                            <tr key={v._id}>
+                              <td>{new Date(v.createdAt).toLocaleString('pt-PT')}</td>
+                              <td>
+                                {v.country === 'MZ' || !v.country ? '🇲🇿 Moçambique' : `🌍 ${v.country}`}
+                                {v.city ? ` (${v.city})` : ''}
+                              </td>
+                              <td>{v.device || 'Desktop 💻'}</td>
+                              <td>
+                                <code style={{ background: 'rgba(255,255,255,0.06)', padding: '0.2rem 0.5rem', borderRadius: '4px', color: '#fff' }}>
+                                  {v.path || '/'}
+                                </code>
+                              </td>
+                              <td style={{ fontSize: '0.8rem', color: '#888' }}>{v.ip || '—'}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
-                  </div>
+                  )}
                 </div>
 
                 {/* Quick Shortcuts */}
@@ -677,6 +722,51 @@ const Admin = () => {
                     <button className="btn-add" onClick={() => { setTab('gallery'); setGalleryModal({}); }}><Plus size={16}/> Adicionar Foto</button>
                   </div>
                 </div>
+              </div>
+            )}
+          </>
+        )}
+
+        {tab === 'visits' && (
+          <>
+            <div className="admin-topbar">
+              <h2><Eye size={22}/> Registos Detalhados de Visitas <span className="count">{stats.visits || 0}</span></h2>
+            </div>
+            {loading ? <p className="admin-loading">A carregar registos de visitas...</p> : (
+              <div className="admin-table-wrap">
+                {(!stats.recentVisits || stats.recentVisits.length === 0) ? (
+                  <p className="empty-row" style={{ padding: '2rem', textAlign: 'center' }}>Nenhuma visita registada ainda.</p>
+                ) : (
+                  <table className="admin-table">
+                    <thead>
+                      <tr>
+                        <th>Data & Hora</th>
+                        <th>Localização</th>
+                        <th>Dispositivo</th>
+                        <th>Página / Perfil Consultado</th>
+                        <th>IP do Visitante</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {stats.recentVisits.map((v) => (
+                        <tr key={v._id}>
+                          <td><strong>{new Date(v.createdAt).toLocaleString('pt-PT')}</strong></td>
+                          <td>
+                            {v.country === 'MZ' || !v.country ? '🇲🇿 Moçambique' : `🌍 ${v.country}`}
+                            {v.city ? ` (${v.city})` : ''}
+                          </td>
+                          <td>{v.device || 'Desktop 💻'}</td>
+                          <td>
+                            <code style={{ background: 'rgba(255,255,255,0.08)', padding: '0.25rem 0.6rem', borderRadius: '4px', color: '#fff', fontWeight: 600 }}>
+                              {v.path || '/'}
+                            </code>
+                          </td>
+                          <td style={{ fontSize: '0.8rem', color: '#aaa' }}>{v.ip || '—'}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
               </div>
             )}
           </>
