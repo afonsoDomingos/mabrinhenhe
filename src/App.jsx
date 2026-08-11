@@ -5,6 +5,7 @@ import Hero from './components/Hero';
 import Artists from './components/Artists';
 import Events from './components/Events';
 import Community from './components/Community';
+import Gallery from './components/Gallery';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Admin from './pages/Admin';
@@ -23,6 +24,7 @@ function App() {
         <Hero />
         <Artists />
         <Events />
+        <Gallery />
         <Community />
         <Contact />
       </main>

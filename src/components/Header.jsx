@@ -32,6 +32,7 @@ const Header = () => {
           <button onClick={() => handleNav('inicio')} className="nav-link">Início</button>
           <button onClick={() => handleNav('artistas')} className="nav-link">Artistas</button>
           <button onClick={() => handleNav('eventos')} className="nav-link">Eventos</button>
+          <button onClick={() => handleNav('galeria')} className="nav-link">Galeria</button>
           <button onClick={() => handleNav('comunidade')} className="nav-link">Comunidade</button>
           <button onClick={() => handleNav('contacto')} className="nav-link nav-cta">Candidatura</button>
           <a href="/admin" className="nav-link admin-nav-link" title="Painel Admin">Admin</a>

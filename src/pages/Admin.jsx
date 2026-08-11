@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Mic2, Calendar, LogOut, Plus, Pencil, Trash2, X, Check, Star, Mail, CheckCircle, Clock, XCircle, Home } from 'lucide-react';
+import { Mic2, Calendar, LogOut, Plus, Pencil, Trash2, X, Check, Star, Mail, CheckCircle, Clock, XCircle, Home, Image as ImageIcon } from 'lucide-react';
 import './Admin.css';
 
 const ADMIN_PASSWORD_KEY = 'mabrinhenhe_admin_pw';
@@ -198,6 +198,102 @@ const EventModal = ({ initial, onSave, onClose, pw }) => {
   );
 };
 
+// ─── Gallery Form Modal ────────────────────────────────────────
+const emptyGallery = { title: '', eventDate: '', imageUrl: '', category: 'Concertos' };
+const GalleryModal = ({ initial, onSave, onClose, pw }) => {
+  const [form, setForm] = useState(initial || emptyGallery);
+  const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setUploading(true);
+    setError('');
+
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { 'x-admin-password': pw },
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      setForm((prev) => ({ ...prev, imageUrl: data.url }));
+    } catch (err) {
+      setError('Erro no upload da foto: ' + err.message);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!form.imageUrl) {
+      setError('Por favor, carregue uma foto.');
+      return;
+    }
+    setSaving(true);
+    setError('');
+    try {
+      const result = await api('/api/gallery', { method: 'POST', body: JSON.stringify(form) }, pw);
+      if (result.error) throw new Error(result.error);
+      onSave();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-header">
+          <h3>Nova Foto da Galeria</h3>
+          <button onClick={onClose}><X size={20} /></button>
+        </div>
+        <form onSubmit={handleSubmit} className="modal-form">
+          {error && <div className="form-error">{error}</div>}
+          <label>Título / Descrição da Foto *<input required value={form.title} onChange={e => setForm({...form, title: e.target.value})} placeholder="Ex: MC Xindza no Mabrinhenhe Show" /></label>
+          <label>Data do Evento<input value={form.eventDate} onChange={e => setForm({...form, eventDate: e.target.value})} placeholder="Ex: 12 AGO 2026" /></label>
+          <label>Categoria
+            <select value={form.category} onChange={e => setForm({...form, category: e.target.value})}>
+              <option value="Concertos">Concertos</option>
+              <option value="Festivais">Festivais</option>
+              <option value="Hip-Hop">Hip-Hop</option>
+              <option value="Bastidores">Bastidores</option>
+              <option value="Geral">Geral</option>
+            </select>
+          </label>
+          
+          <label>Foto do Evento (Cloudinary) *
+            <input type="file" accept="image/*" onChange={handleImageUpload} disabled={uploading} />
+            {uploading && <small style={{ color: '#aaa', marginTop: '0.2rem' }}>A carregar foto para o Cloudinary...</small>}
+            {form.imageUrl && (
+              <div style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <img src={form.imageUrl} alt="Preview" style={{ width: 80, height: 60, borderRadius: '4px', objectFit: 'cover', border: '1px solid #444' }} />
+                <small style={{ color: '#888', wordBreak: 'break-all' }}>{form.imageUrl}</small>
+              </div>
+            )}
+          </label>
+
+          <div className="modal-actions">
+            <button type="button" className="btn-cancel" onClick={onClose}>Cancelar</button>
+            <button type="submit" className="btn-save" disabled={saving || uploading}>{saving ? 'A guardar...' : <><Check size={16}/> Guardar</>}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+
 // ─── Main Admin Page ──────────────────────────────────────────
 const Admin = () => {
   const [pw, setPw] = useState(() => sessionStorage.getItem(ADMIN_PASSWORD_KEY) || '');
@@ -207,8 +303,10 @@ const Admin = () => {
   const [artists, setArtists] = useState([]);
   const [events, setEvents] = useState([]);
   const [contacts, setContacts] = useState([]);
+  const [gallery, setGallery] = useState([]);
   const [artistModal, setArtistModal] = useState(null); // null | {} | {artist}
   const [eventModal, setEventModal] = useState(null);
+  const [galleryModal, setGalleryModal] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const isLoggedIn = !!pw;
@@ -217,14 +315,16 @@ const Admin = () => {
     if (!pw) return;
     setLoading(true);
     try {
-      const [a, e, c] = await Promise.all([
+      const [a, e, c, g] = await Promise.all([
         fetch('/api/artists').then(r => r.json()),
         fetch('/api/events').then(r => r.json()),
         fetch('/api/contact', { headers: { 'x-admin-password': pw } }).then(r => r.json()),
+        fetch('/api/gallery').then(r => r.json()),
       ]);
       setArtists(Array.isArray(a) ? a : []);
       setEvents(Array.isArray(e) ? e : []);
       setContacts(Array.isArray(c) ? c : []);
+      setGallery(Array.isArray(g) ? g : []);
     } finally {
       setLoading(false);
     }
@@ -264,6 +364,12 @@ const Admin = () => {
   const deleteEvent = async (id) => {
     if (!window.confirm('Apagar este evento?')) return;
     await api(`/api/events/${id}`, { method: 'DELETE' }, pw);
+    fetchAll();
+  };
+
+  const deleteGalleryPhoto = async (id) => {
+    if (!window.confirm('Apagar esta foto da galeria?')) return;
+    await api(`/api/gallery/${id}`, { method: 'DELETE' }, pw);
     fetchAll();
   };
   const deleteContact = async (id) => {
@@ -317,6 +423,7 @@ const Admin = () => {
           <div style={{ height: '1px', background: 'var(--border-color)', margin: '0.5rem 0' }} />
           <button className={tab === 'artists' ? 'active' : ''} onClick={() => setTab('artists')}><Mic2 size={18}/> Artistas</button>
           <button className={tab === 'events' ? 'active' : ''} onClick={() => setTab('events')}><Calendar size={18}/> Eventos</button>
+          <button className={tab === 'gallery' ? 'active' : ''} onClick={() => setTab('gallery')}><ImageIcon size={18}/> Galeria</button>
           <button className={tab === 'contacts' ? 'active' : ''} onClick={() => setTab('contacts')}>
             <Mail size={18}/> Candidaturas
             {contacts.filter(c => c.status === 'pendente').length > 0 && (
@@ -462,6 +569,44 @@ const Admin = () => {
             )}
           </>
         )}
+        {tab === 'gallery' && (
+          <>
+            <div className="admin-topbar">
+              <h2><ImageIcon size={22}/> Galeria de Fotos <span className="count">{gallery.length}</span></h2>
+              <button className="btn-add" onClick={() => setGalleryModal({})}><Plus size={18}/> Nova Foto</button>
+            </div>
+            {loading ? <p className="admin-loading">A carregar...</p> : (
+              <div className="admin-table-wrap">
+                <table className="admin-table">
+                  <thead>
+                    <tr><th>Foto</th><th>Título / Descrição</th><th>Data do Evento</th><th>Categoria</th><th>Ações</th></tr>
+                  </thead>
+                  <tbody>
+                    {gallery.length === 0 ? (
+                      <tr><td colSpan={5} className="empty-row">Nenhuma foto na galeria. Clique em "Nova Foto".</td></tr>
+                    ) : gallery.map(item => (
+                      <tr key={item._id}>
+                        <td>
+                          {item.imageUrl ? (
+                            <img src={item.imageUrl} alt={item.title} style={{ width: 60, height: 45, borderRadius: '4px', objectFit: 'cover', border: '1px solid #444' }} />
+                          ) : (
+                            <div style={{ width: 60, height: 45, borderRadius: '4px', background: 'rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.65rem', color: '#666' }}>S/FOTO</div>
+                          )}
+                        </td>
+                        <td><strong>{item.title}</strong></td>
+                        <td>{item.eventDate || '—'}</td>
+                        <td><span className="contact-type-badge">{item.category || 'Geral'}</span></td>
+                        <td className="actions-cell">
+                          <button className="icon-btn delete" onClick={() => deleteGalleryPhoto(item._id)}><Trash2 size={15}/></button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </>
+        )}
       </main>
 
       {/* Modals */}
@@ -479,6 +624,14 @@ const Admin = () => {
           pw={pw}
           onClose={() => setEventModal(null)}
           onSave={() => { setEventModal(null); fetchAll(); }}
+        />
+      )}
+      {galleryModal !== null && (
+        <GalleryModal
+          initial={galleryModal._id ? galleryModal : null}
+          pw={pw}
+          onClose={() => setGalleryModal(null)}
+          onSave={() => { setGalleryModal(null); fetchAll(); }}
         />
       )}
     </div>
