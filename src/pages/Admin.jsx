@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Mic2, Calendar, LogOut, Plus, Pencil, Trash2, X, Check, Star, Mail, CheckCircle, Clock, XCircle, Home, Image as ImageIcon, LayoutDashboard, Eye, MessageSquare } from 'lucide-react';
+import { Mic2, Calendar, LogOut, Plus, Pencil, Trash2, X, Check, Star, Mail, CheckCircle, Clock, XCircle, Home, Image as ImageIcon, LayoutDashboard, Eye, MessageSquare, Bell } from 'lucide-react';
 import './Admin.css';
 
 const ADMIN_PASSWORD_KEY = 'mabrinhenhe_admin_pw';
@@ -304,6 +304,7 @@ const Admin = () => {
   const [events, setEvents] = useState([]);
   const [contacts, setContacts] = useState([]);
   const [gallery, setGallery] = useState([]);
+  const [subscribers, setSubscribers] = useState([]);
   const [stats, setStats] = useState({ artists: 0, events: 0, posts: 0, contacts: 0, gallery: 0, visits: 0, recentVisits: [] });
   const [artistModal, setArtistModal] = useState(null); // null | {} | {artist}
   const [eventModal, setEventModal] = useState(null);
@@ -316,18 +317,20 @@ const Admin = () => {
     if (!pw) return;
     setLoading(true);
     try {
-      const [a, e, c, g, st] = await Promise.all([
+      const [a, e, c, g, st, sb] = await Promise.all([
         fetch('/api/artists').then(r => r.json()),
         fetch('/api/events').then(r => r.json()),
         fetch('/api/contact', { headers: { 'x-admin-password': pw } }).then(r => r.json()),
         fetch('/api/gallery').then(r => r.json()),
         fetch('/api/stats', { headers: { 'x-admin-password': pw } }).then(r => r.json()),
+        fetch('/api/subscribers', { headers: { 'x-admin-password': pw } }).then(r => r.json()),
       ]);
       setArtists(Array.isArray(a) ? a : []);
       setEvents(Array.isArray(e) ? e : []);
       setContacts(Array.isArray(c) ? c : []);
       setGallery(Array.isArray(g) ? g : []);
       if (st && !st.error) setStats(st);
+      setSubscribers(Array.isArray(sb) ? sb : []);
     } finally {
       setLoading(false);
     }
@@ -373,6 +376,12 @@ const Admin = () => {
   const deleteGalleryPhoto = async (id) => {
     if (!window.confirm('Apagar esta foto da galeria?')) return;
     await api(`/api/gallery/${id}`, { method: 'DELETE' }, pw);
+    fetchAll();
+  };
+
+  const deleteSubscriber = async (id) => {
+    if (!window.confirm('Remover este subscritor?')) return;
+    await api(`/api/subscribers/${id}`, { method: 'DELETE' }, pw);
     fetchAll();
   };
   const deleteContact = async (id) => {
@@ -435,6 +444,9 @@ const Admin = () => {
                 {contacts.filter(c => c.status === 'pendente').length}
               </span>
             )}
+          </button>
+          <button className={tab === 'subscribers' ? 'active' : ''} onClick={() => setTab('subscribers')}>
+            <Bell size={18}/> Subscritores ({subscribers.length})
           </button>
         </nav>
         <button className="sidebar-logout" onClick={handleLogout}><LogOut size={16}/> Sair</button>
@@ -668,6 +680,36 @@ const Admin = () => {
                         <td><span className="contact-type-badge">{item.category || 'Geral'}</span></td>
                         <td className="actions-cell">
                           <button className="icon-btn delete" onClick={() => deleteGalleryPhoto(item._id)}><Trash2 size={15}/></button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </>
+        )}
+        {tab === 'subscribers' && (
+          <>
+            <div className="admin-topbar">
+              <h2><Bell size={22}/> Lista de Subscritores <span className="count">{subscribers.length}</span></h2>
+            </div>
+            {loading ? <p className="admin-loading">A carregar...</p> : (
+              <div className="admin-table-wrap">
+                <table className="admin-table">
+                  <thead>
+                    <tr><th>Email</th><th>Data de Inscrição</th><th>Estado</th><th>Ações</th></tr>
+                  </thead>
+                  <tbody>
+                    {subscribers.length === 0 ? (
+                      <tr><td colSpan={4} className="empty-row">Nenhum subscritor inscrito ainda.</td></tr>
+                    ) : subscribers.map(sub => (
+                      <tr key={sub._id}>
+                        <td><strong>{sub.email}</strong></td>
+                        <td>{new Date(sub.createdAt).toLocaleDateString('pt-PT')}</td>
+                        <td><span className="contact-badge aprovado">Ativo</span></td>
+                        <td className="actions-cell">
+                          <button className="icon-btn delete" onClick={() => deleteSubscriber(sub._id)}><Trash2 size={15}/></button>
                         </td>
                       </tr>
                     ))}

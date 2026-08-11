@@ -10,6 +10,7 @@ const uploadRouter = require('./routes/upload');
 const contactRouter = require('./routes/contact');
 const galleryRouter = require('./routes/gallery');
 const statsRouter = require('./routes/stats');
+const subscribersRouter = require('./routes/subscribers');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -26,6 +27,7 @@ app.use('/api/upload', uploadRouter);
 app.use('/api/contact', contactRouter);
 app.use('/api/gallery', galleryRouter);
 app.use('/api/stats', statsRouter);
+app.use('/api/subscribers', subscribersRouter);
 
 // Health check
 app.get('/api/health', (req, res) => res.json({ status: 'ok', db: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected' }));

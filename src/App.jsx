@@ -7,6 +7,7 @@ import Events from './components/Events';
 import Community from './components/Community';
 import Gallery from './components/Gallery';
 import Contact from './components/Contact';
+import Newsletter from './components/Newsletter';
 import Footer from './components/Footer';
 import Admin from './pages/Admin';
 import ArtistPage from './pages/ArtistPage';
@@ -60,6 +61,7 @@ function App() {
         <Events onSelectEvent={(id) => setSelectedEventId(id)} />
         <Gallery />
         <Community />
+        <Newsletter />
         <Contact />
       </main>
       <Footer />

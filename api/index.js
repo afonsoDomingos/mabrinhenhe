@@ -11,6 +11,7 @@ const seedRouter = require('./seed');
 const contactRouter = require('../server/routes/contact');
 const galleryRouter = require('../server/routes/gallery');
 const statsRouter = require('../server/routes/stats');
+const subscribersRouter = require('../server/routes/subscribers');
 
 const app = express();
 
@@ -55,6 +56,7 @@ app.use('/api/seed', seedRouter);
 app.use('/api/contact', contactRouter);
 app.use('/api/gallery', galleryRouter);
 app.use('/api/stats', statsRouter);
+app.use('/api/subscribers', subscribersRouter);
 
 app.get('/api/health', (req, res) =>
   res.json({
