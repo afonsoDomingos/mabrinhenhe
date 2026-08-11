@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Mic2, Calendar, LogOut, Plus, Pencil, Trash2, X, Check, Star, Mail, CheckCircle, Clock, XCircle } from 'lucide-react';
+import { Mic2, Calendar, LogOut, Plus, Pencil, Trash2, X, Check, Star, Mail, CheckCircle, Clock, XCircle, Home } from 'lucide-react';
 import './Admin.css';
 
 const ADMIN_PASSWORD_KEY = 'mabrinhenhe_admin_pw';
@@ -313,6 +313,8 @@ const Admin = () => {
           </div>
         </div>
         <nav className="sidebar-nav">
+          <a href="/" className="sidebar-home-link"><Home size={18}/> Ver Site Principal</a>
+          <div style={{ height: '1px', background: 'var(--border-color)', margin: '0.5rem 0' }} />
           <button className={tab === 'artists' ? 'active' : ''} onClick={() => setTab('artists')}><Mic2 size={18}/> Artistas</button>
           <button className={tab === 'events' ? 'active' : ''} onClick={() => setTab('events')}><Calendar size={18}/> Eventos</button>
           <button className={tab === 'contacts' ? 'active' : ''} onClick={() => setTab('contacts')}>

@@ -20,9 +20,8 @@ const Footer = () => (
         </div>
         <div className="link-group">
           <h4>Empresa</h4>
-          <a href="#">Sobre Nós</a>
-          <a href="#">Contacto</a>
-          <a href="#">Parcerias</a>
+          <a href="#contacto">Contacto</a>
+          <a href="/admin">Painel Admin</a>
         </div>
       </div>
       <div className="footer-social">
