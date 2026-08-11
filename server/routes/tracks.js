@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const Track = require('../server/models/Track');
-const { requireAdmin } = require('../server/middleware/auth');
+const Track = require('../models/Track');
+const { requireAdmin } = require('../middleware/auth');
 
 // GET /api/tracks — public
 router.get('/', async (req, res) => {
