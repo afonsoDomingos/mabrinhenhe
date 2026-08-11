@@ -53,11 +53,15 @@ const Events = () => {
               const { day, month, year } = dateParts(event.date);
               return (
                 <motion.div key={event._id} className="event-card glass" variants={cardVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-                  <div className="event-date-badge">
-                    <span className="day">{day}</span>
-                    <span className="month">{month}</span>
-                    <span className="year">{year}</span>
-                  </div>
+                  {event.imageUrl ? (
+                    <img src={event.imageUrl} alt={event.title} className="event-poster-img" />
+                  ) : (
+                    <div className="event-date-badge">
+                      <span className="day">{day}</span>
+                      <span className="month">{month}</span>
+                      <span className="year">{year}</span>
+                    </div>
+                  )}
                   <div className="event-info">
                     <h3>{event.title}</h3>
                     <p className="event-desc">{event.description}</p>

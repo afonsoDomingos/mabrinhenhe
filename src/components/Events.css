@@ -47,6 +47,15 @@
   border-color: rgba(255,255,255,0.25);
 }
 
+.event-poster-img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
 .event-date-badge {
   display: flex;
   flex-direction: column;

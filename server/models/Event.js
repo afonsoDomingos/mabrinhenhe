@@ -10,6 +10,7 @@ const EventSchema = new mongoose.Schema(
     status: { type: String, enum: ['upcoming', 'past'], default: 'upcoming' },
     description: { type: String, required: true },
     ticketUrl: { type: String, default: '' },
+    imageUrl: { type: String, default: '' },
   },
   { timestamps: true }
 );

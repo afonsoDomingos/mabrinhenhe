@@ -5,7 +5,7 @@ import './Admin.css';
 const ADMIN_PASSWORD_KEY = 'mabrinhenhe_admin_pw';
 
 const emptyArtist = { name: '', genre: '', description: '', featured: false, imageUrl: '' };
-const emptyEvent = { title: '', date: '', time: '', location: '', artists: '', status: 'upcoming', description: '', ticketUrl: '' };
+const emptyEvent = { title: '', date: '', time: '', location: '', artists: '', status: 'upcoming', description: '', ticketUrl: '', imageUrl: '' };
 
 // ─── API helpers ──────────────────────────────────────────────
 const api = (url, options = {}, pw) =>
@@ -105,14 +105,41 @@ const EventModal = ({ initial, onSave, onClose, pw }) => {
     initial ? { ...initial, artists: Array.isArray(initial.artists) ? initial.artists.join(', ') : initial.artists } : emptyEvent
   );
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setUploading(true);
+    setError('');
+
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { 'x-admin-password': pw },
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      setForm((prev) => ({ ...prev, imageUrl: data.url }));
+    } catch (err) {
+      setError('Erro no upload do cartaz: ' + err.message);
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
     setError('');
     try {
-      const payload = { ...form, artists: form.artists.split(',').map(a => a.trim()).filter(Boolean) };
+      const payload = { ...form, artists: typeof form.artists === 'string' ? form.artists.split(',').map(a => a.trim()).filter(Boolean) : form.artists };
       const method = form._id ? 'PUT' : 'POST';
       const url = form._id ? `/api/events/${form._id}` : '/api/events';
       const result = await api(url, { method, body: JSON.stringify(payload) }, pw);
@@ -142,6 +169,18 @@ const EventModal = ({ initial, onSave, onClose, pw }) => {
           <label>Local *<input required value={form.location} onChange={e => setForm({...form, location: e.target.value})} placeholder="Praça Central de Xai-Xai" /></label>
           <label>Artistas (separados por vírgula)<input value={form.artists} onChange={e => setForm({...form, artists: e.target.value})} placeholder="MC Xindza, DJ Nyanga" /></label>
           <label>Descrição *<textarea required value={form.description} onChange={e => setForm({...form, description: e.target.value})} rows={3} /></label>
+          
+          <label>Cartaz / Foto do Evento (Cloudinary)
+            <input type="file" accept="image/*" onChange={handleImageUpload} disabled={uploading} />
+            {uploading && <small style={{ color: '#aaa', marginTop: '0.2rem' }}>A carregar cartaz para o Cloudinary...</small>}
+            {form.imageUrl && (
+              <div style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <img src={form.imageUrl} alt="Preview" style={{ width: 80, height: 50, borderRadius: '4px', objectFit: 'cover', border: '1px solid #444' }} />
+                <small style={{ color: '#888', wordBreak: 'break-all' }}>{form.imageUrl}</small>
+              </div>
+            )}
+          </label>
+
           <label>Link de Bilhetes<input value={form.ticketUrl} onChange={e => setForm({...form, ticketUrl: e.target.value})} placeholder="https://..." /></label>
           <label>Estado
             <select value={form.status} onChange={e => setForm({...form, status: e.target.value})}>
@@ -151,7 +190,7 @@ const EventModal = ({ initial, onSave, onClose, pw }) => {
           </label>
           <div className="modal-actions">
             <button type="button" className="btn-cancel" onClick={onClose}>Cancelar</button>
-            <button type="submit" className="btn-save" disabled={saving}>{saving ? 'A guardar...' : <><Check size={16}/> Guardar</>}</button>
+            <button type="submit" className="btn-save" disabled={saving || uploading}>{saving ? 'A guardar...' : <><Check size={16}/> Guardar</>}</button>
           </div>
         </form>
       </div>
