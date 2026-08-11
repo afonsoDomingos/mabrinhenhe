@@ -8,6 +8,7 @@ const eventsRouter = require('../server/routes/events');
 const postsRouter = require('../server/routes/posts');
 const uploadRouter = require('../server/routes/upload');
 const seedRouter = require('./seed');
+const contactRouter = require('../server/routes/contact');
 
 const app = express();
 
@@ -49,6 +50,7 @@ app.use('/api/events', eventsRouter);
 app.use('/api/posts', postsRouter);
 app.use('/api/upload', uploadRouter);
 app.use('/api/seed', seedRouter);
+app.use('/api/contact', contactRouter);
 
 app.get('/api/health', (req, res) =>
   res.json({

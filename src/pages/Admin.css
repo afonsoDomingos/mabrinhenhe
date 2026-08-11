@@ -447,3 +447,118 @@
   .sidebar-nav { flex-direction: row; gap: 0.25rem; }
   .form-row { grid-template-columns: 1fr; }
 }
+
+/* ─── Contacts / Candidaturas ─── */
+.contacts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0.5rem 0;
+}
+
+.contact-card {
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  border-left: 3px solid transparent;
+}
+
+.contact-card.contact-pendente { border-left-color: rgba(255,255,255,0.5); }
+.contact-card.contact-aprovado { border-left-color: #4ade80; }
+.contact-card.contact-rejeitado { border-left-color: #f87171; }
+.contact-card.contact-lido { border-left-color: rgba(255,255,255,0.2); }
+
+.contact-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.contact-card-header strong {
+  font-size: 1rem;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.contact-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+.contact-badge.pendente { border-color: rgba(255,255,255,0.4); color: white; }
+.contact-badge.aprovado { border-color: #4ade80; color: #4ade80; }
+.contact-badge.rejeitado { border-color: #f87171; color: #f87171; }
+
+.contact-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.contact-type-badge {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 0.1rem 0.5rem;
+  font-size: 0.72rem;
+  text-transform: capitalize;
+}
+
+.contact-message {
+  font-size: 0.88rem;
+  color: rgba(255,255,255,0.75);
+  line-height: 1.6;
+  background: rgba(255,255,255,0.03);
+  border-radius: 5px;
+  padding: 0.75rem 1rem;
+}
+
+.contact-socials {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.contact-socials a {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.contact-socials a:hover { color: white; }
+
+.contact-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.btn-status {
+  font-size: 0.75rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.btn-status:hover { color: white; border-color: white; }
+.btn-status.aprovado:hover { border-color: #4ade80; color: #4ade80; }
+.btn-status.rejeitado:hover { border-color: #f87171; color: #f87171; }

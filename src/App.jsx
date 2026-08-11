@@ -5,13 +5,14 @@ import Hero from './components/Hero';
 import Artists from './components/Artists';
 import Events from './components/Events';
 import Community from './components/Community';
+import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Admin from './pages/Admin';
 
 function App() {
-  const isAdmin = window.location.pathname === '/admin';
+  const path = window.location.pathname;
 
-  if (isAdmin) {
+  if (path === '/admin') {
     return <Admin />;
   }
 
@@ -23,6 +24,7 @@ function App() {
         <Artists />
         <Events />
         <Community />
+        <Contact />
       </main>
       <Footer />
     </div>

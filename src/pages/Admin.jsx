@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Mic2, Calendar, LogOut, Plus, Pencil, Trash2, X, Check, Star } from 'lucide-react';
+import { Mic2, Calendar, LogOut, Plus, Pencil, Trash2, X, Check, Star, Mail, CheckCircle, Clock, XCircle } from 'lucide-react';
 import './Admin.css';
 
 const ADMIN_PASSWORD_KEY = 'mabrinhenhe_admin_pw';
@@ -206,6 +206,7 @@ const Admin = () => {
   const [tab, setTab] = useState('artists');
   const [artists, setArtists] = useState([]);
   const [events, setEvents] = useState([]);
+  const [contacts, setContacts] = useState([]);
   const [artistModal, setArtistModal] = useState(null); // null | {} | {artist}
   const [eventModal, setEventModal] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -216,9 +217,14 @@ const Admin = () => {
     if (!pw) return;
     setLoading(true);
     try {
-      const [a, e] = await Promise.all([fetch('/api/artists').then(r => r.json()), fetch('/api/events').then(r => r.json())]);
+      const [a, e, c] = await Promise.all([
+        fetch('/api/artists').then(r => r.json()),
+        fetch('/api/events').then(r => r.json()),
+        fetch('/api/contact', { headers: { 'x-admin-password': pw } }).then(r => r.json()),
+      ]);
       setArtists(Array.isArray(a) ? a : []);
       setEvents(Array.isArray(e) ? e : []);
+      setContacts(Array.isArray(c) ? c : []);
     } finally {
       setLoading(false);
     }
@@ -260,8 +266,17 @@ const Admin = () => {
     await api(`/api/events/${id}`, { method: 'DELETE' }, pw);
     fetchAll();
   };
+  const deleteContact = async (id) => {
+    if (!window.confirm('Apagar esta candidatura?')) return;
+    await api(`/api/contact/${id}`, { method: 'DELETE' }, pw);
+    fetchAll();
+  };
 
-  // ── Login screen ──
+  const updateContactStatus = async (id, status) => {
+    await api(`/api/contact/${id}`, { method: 'PUT', body: JSON.stringify({ status }) }, pw);
+    fetchAll();
+  };
+
   if (!isLoggedIn) {
     return (
       <div className="admin-login">
@@ -300,6 +315,14 @@ const Admin = () => {
         <nav className="sidebar-nav">
           <button className={tab === 'artists' ? 'active' : ''} onClick={() => setTab('artists')}><Mic2 size={18}/> Artistas</button>
           <button className={tab === 'events' ? 'active' : ''} onClick={() => setTab('events')}><Calendar size={18}/> Eventos</button>
+          <button className={tab === 'contacts' ? 'active' : ''} onClick={() => setTab('contacts')}>
+            <Mail size={18}/> Candidaturas
+            {contacts.filter(c => c.status === 'pendente').length > 0 && (
+              <span style={{ marginLeft: 'auto', background: 'white', color: 'black', borderRadius: '20px', padding: '0 6px', fontSize: '0.7rem', fontWeight: 700 }}>
+                {contacts.filter(c => c.status === 'pendente').length}
+              </span>
+            )}
+          </button>
         </nav>
         <button className="sidebar-logout" onClick={handleLogout}><LogOut size={16}/> Sair</button>
       </aside>
@@ -380,6 +403,59 @@ const Admin = () => {
                     ))}
                   </tbody>
                 </table>
+              </div>
+            )}
+          </>
+        )}
+        {tab === 'contacts' && (
+          <>
+            <div className="admin-topbar">
+              <h2><Mail size={22}/> Candidaturas <span className="count">{contacts.length}</span></h2>
+            </div>
+            {loading ? <p className="admin-loading">A carregar...</p> : (
+              <div className="admin-table-wrap">
+                {contacts.length === 0 ? (
+                  <p className="empty-row" style={{ padding: '2rem', textAlign: 'center' }}>Nenhuma candidatura ainda.</p>
+                ) : (
+                  <div className="contacts-list">
+                    {contacts.map(c => (
+                      <div key={c._id} className={`contact-card glass contact-${c.status}`}>
+                        <div className="contact-card-header">
+                          <div>
+                            <strong>{c.name}</strong>
+                            <span className={`contact-badge ${c.status}`}>
+                              {c.status === 'pendente' ? <><Clock size={11}/> Pendente</> :
+                               c.status === 'lido' ? <><CheckCircle size={11}/> Lido</> :
+                               c.status === 'aprovado' ? <><CheckCircle size={11}/> Aprovado</> :
+                               <><XCircle size={11}/> Rejeitado</>}
+                            </span>
+                          </div>
+                          <button className="icon-btn delete" onClick={() => deleteContact(c._id)}><Trash2 size={15}/></button>
+                        </div>
+                        <div className="contact-card-meta">
+                          <span>{c.email}</span>
+                          <span className="contact-type-badge">{c.type}</span>
+                          {c.genre && <span>{c.genre}</span>}
+                        </div>
+                        <p className="contact-message">{c.message}</p>
+                        {(c.instagram || c.tiktok) && (
+                          <div className="contact-socials">
+                            {c.instagram && <a href={c.instagram} target="_blank" rel="noreferrer">Instagram ↗</a>}
+                            {c.tiktok && <a href={c.tiktok} target="_blank" rel="noreferrer">TikTok ↗</a>}
+                          </div>
+                        )}
+                        <div className="contact-actions">
+                          <span style={{ fontSize: '0.72rem', color: '#666' }}>{new Date(c.createdAt).toLocaleDateString('pt-PT')}</span>
+                          <div style={{ display: 'flex', gap: '0.5rem' }}>
+                            {c.status !== 'lido' && <button className="btn-status lido" onClick={() => updateContactStatus(c._id, 'lido')}>Marcar Lido</button>}
+                            {c.status !== 'aprovado' && <button className="btn-status aprovado" onClick={() => updateContactStatus(c._id, 'aprovado')}>Aprovar</button>}
+                            {c.status !== 'rejeitado' && <button className="btn-status rejeitado" onClick={() => updateContactStatus(c._id, 'rejeitado')}>Rejeitar</button>}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </>

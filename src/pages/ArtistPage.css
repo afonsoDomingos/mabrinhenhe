@@ -1,0 +1,312 @@
+.artist-page-loading {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  color: var(--text-secondary);
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(255,255,255,0.1);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── Hero ─── */
+.artist-hero {
+  position: relative;
+  min-height: 420px;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+.artist-hero-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center top;
+  filter: blur(18px) brightness(0.35);
+  transform: scale(1.1);
+  background-color: #111;
+}
+
+.artist-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
+}
+
+.artist-hero-content {
+  position: relative;
+  z-index: 2;
+  padding-top: 2rem;
+  padding-bottom: 3rem;
+  width: 100%;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  padding: 0.45rem 1rem;
+  margin-bottom: 2rem;
+  transition: all 0.2s;
+}
+
+.back-btn:hover {
+  color: white;
+  border-color: white;
+}
+
+.artist-hero-info {
+  display: flex;
+  align-items: flex-end;
+  gap: 2rem;
+}
+
+.artist-page-photo {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(255,255,255,0.3);
+  flex-shrink: 0;
+}
+
+.artist-page-photo-placeholder {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  border: 3px solid rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--text-secondary);
+}
+
+.featured-tag {
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  color: var(--text-secondary);
+  margin-bottom: 0.4rem;
+  display: block;
+}
+
+.artist-hero-info h1 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 900;
+  letter-spacing: 2px;
+  line-height: 1;
+  margin-bottom: 0.4rem;
+}
+
+.artist-page-genre {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  letter-spacing: 2px;
+  margin-bottom: 1.2rem;
+}
+
+/* ─── Social Links ─── */
+.social-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.social-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+}
+
+.social-link:hover {
+  color: white;
+  border-color: white;
+  transform: translateY(-1px);
+}
+
+/* ─── Body ─── */
+.artist-page-body {
+  padding: 3rem 2rem;
+}
+
+.artist-page-grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 3rem;
+  align-items: start;
+}
+
+/* ─── Bio ─── */
+.artist-bio-section h2,
+.artist-events-section h2 {
+  font-size: 0.75rem;
+  letter-spacing: 3px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.artist-short-desc {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.artist-full-bio {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: rgba(255,255,255,0.75);
+}
+
+/* ─── Spotify Embed ─── */
+.artist-spotify-embed,
+.artist-youtube-embed {
+  margin-top: 2rem;
+}
+
+.artist-spotify-embed h3,
+.artist-youtube-embed h3 {
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+.artist-spotify-embed iframe {
+  border-radius: 8px;
+}
+
+.youtube-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.4rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  transition: all 0.2s;
+}
+
+.youtube-link-btn:hover {
+  background: rgba(255,255,255,0.05);
+  border-color: white;
+}
+
+/* ─── Events ─── */
+.no-events {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-secondary);
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.artist-event-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.artist-event-card {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.artist-event-img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  display: block;
+}
+
+.artist-event-info {
+  padding: 1rem 1.2rem;
+}
+
+.status-dot {
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-dot.upcoming { color: white; }
+.status-dot.past { color: var(--text-secondary); }
+
+.artist-event-info h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0.3rem 0;
+  letter-spacing: 0.5px;
+}
+
+.artist-event-info p {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.2rem;
+}
+
+.btn-tickets {
+  display: inline-block;
+  margin-top: 0.75rem;
+  padding: 0.45rem 1rem;
+  border: 1px solid white;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: white;
+  transition: all 0.2s;
+}
+
+.btn-tickets:hover {
+  background: white;
+  color: black;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 900px) {
+  .artist-page-grid {
+    grid-template-columns: 1fr;
+  }
+  .artist-hero-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.2rem;
+  }
+  .artist-page-photo,
+  .artist-page-photo-placeholder {
+    width: 110px;
+    height: 110px;
+  }
+}

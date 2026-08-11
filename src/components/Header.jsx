@@ -33,6 +33,7 @@ const Header = () => {
           <button onClick={() => handleNav('artistas')} className="nav-link">Artistas</button>
           <button onClick={() => handleNav('eventos')} className="nav-link">Eventos</button>
           <button onClick={() => handleNav('comunidade')} className="nav-link">Comunidade</button>
+          <button onClick={() => handleNav('contacto')} className="nav-link nav-cta">Candidatura</button>
         </nav>
 
         <button className="mobile-toggle" onClick={() => setIsOpen(!isOpen)} aria-label="Menu">

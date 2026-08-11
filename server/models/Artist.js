@@ -5,8 +5,14 @@ const ArtistSchema = new mongoose.Schema(
     name: { type: String, required: true, trim: true },
     genre: { type: String, required: true, trim: true },
     description: { type: String, required: true },
+    bio: { type: String, default: '' },
     featured: { type: Boolean, default: false },
     imageUrl: { type: String, default: '' },
+    instagram: { type: String, default: '' },
+    tiktok: { type: String, default: '' },
+    spotify: { type: String, default: '' },
+    youtube: { type: String, default: '' },
+    facebook: { type: String, default: '' },
   },
   { timestamps: true }
 );
