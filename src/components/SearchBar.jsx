@@ -1,27 +1,39 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, X, Mic2, Calendar, Music, ArrowRight } from 'lucide-react';
+import { Search, X, Mic2, Calendar, ArrowRight, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './SearchBar.css';
 
 const SearchBar = ({ onSelectArtist, onSelectEvent }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [query, setQuery] = useState('');
-  const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState({ artists: [], events: [] });
-  const searchRef = useRef(null);
+  const inputRef = useRef(null);
 
-  // Close dropdown on outside click
+  // Auto focus input when modal opens
   useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (searchRef.current && !searchRef.current.contains(e.target)) {
-        setIsOpen(false);
+    if (isModalOpen) {
+      setTimeout(() => {
+        if (inputRef.current) inputRef.current.focus();
+      }, 100);
+    } else {
+      setQuery('');
+      setResults({ artists: [], events: [] });
+    }
+  }, [isModalOpen]);
+
+  // Close modal on ESC key
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && isModalOpen) {
+        setIsModalOpen(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isModalOpen]);
 
-  // Fetch and filter results
+  // Fetch & Filter Results
   useEffect(() => {
     if (!query.trim()) {
       setResults({ artists: [], events: [] });
@@ -65,146 +77,181 @@ const SearchBar = ({ onSelectArtist, onSelectEvent }) => {
 
   const totalResults = results.artists.length + results.events.length;
 
-  const handleSelectArtistItem = (id) => {
-    setIsOpen(false);
-    setQuery('');
+  const handleSelectArtist = (id) => {
+    setIsModalOpen(false);
     if (onSelectArtist) onSelectArtist(id);
   };
 
-  const handleSelectEventItem = (id) => {
-    setIsOpen(false);
-    setQuery('');
+  const handleSelectEvent = (id) => {
+    setIsModalOpen(false);
     if (onSelectEvent) onSelectEvent(id);
   };
 
+  const handleQuickTag = (tag) => {
+    setQuery(tag);
+  };
+
   return (
-    <div className="search-bar-wrapper" ref={searchRef}>
-      <div className={`search-input-box ${isOpen ? 'active' : ''}`}>
-        <button
-          className="search-icon-btn"
-          onClick={() => {
-            if (results.artists.length > 0) {
-              handleSelectArtistItem(results.artists[0]._id);
-            } else if (results.events.length > 0) {
-              handleSelectEventItem(results.events[0]._id);
-            } else {
-              setIsOpen(true);
-            }
-          }}
-          title="Pesquisar"
-          type="button"
-        >
-          <Search size={16} className="search-icon" />
-        </button>
-        <input
-          type="text"
-          placeholder="Pesquisar artistas, eventos, géneros..."
-          value={query}
-          onFocus={() => setIsOpen(true)}
-          onChange={(e) => {
-            setQuery(e.target.value);
-            setIsOpen(true);
-          }}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              if (results.artists.length > 0) {
-                handleSelectArtistItem(results.artists[0]._id);
-              } else if (results.events.length > 0) {
-                handleSelectEventItem(results.events[0]._id);
-              }
-            }
-          }}
-        />
-        {query && (
-          <button
-            className="clear-search-btn"
-            onClick={() => {
-              setQuery('');
-              setResults({ artists: [], events: [] });
-            }}
-          >
-            <X size={14} />
-          </button>
-        )}
-      </div>
+    <>
+      {/* Search trigger button in Header */}
+      <button
+        className="header-search-trigger-btn"
+        onClick={() => setIsModalOpen(true)}
+        title="Pesquisar artistas, eventos..."
+        aria-label="Abrir pesquisa"
+      >
+        <Search size={18} />
+        <span className="search-btn-label">Pesquisar</span>
+      </button>
 
-      {/* Results Dropdown */}
+      {/* Fullscreen Modal Overlay */}
       <AnimatePresence>
-        {isOpen && query.trim().length > 0 && (
+        {isModalOpen && (
           <motion.div
-            className="search-results-dropdown glass"
-            initial={{ opacity: 0, y: 8, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 8, scale: 0.98 }}
-            transition={{ duration: 0.2 }}
+            className="search-modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            onClick={() => setIsModalOpen(false)}
           >
-            {loading ? (
-              <div className="search-loading">A pesquisar...</div>
-            ) : totalResults === 0 ? (
-              <div className="search-empty">
-                Nenhum resultado encontrado para "<strong>{query}</strong>"
+            <motion.div
+              className="search-modal-container glass"
+              initial={{ opacity: 0, scale: 0.95, y: -20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: -20 }}
+              transition={{ duration: 0.25 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Header inside Modal */}
+              <div className="search-modal-header">
+                <div className="search-modal-input-wrap">
+                  <Search size={22} className="search-input-icon" />
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    placeholder="Pesquise por artista, evento, género musical ou local..."
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        if (results.artists.length > 0) handleSelectArtist(results.artists[0]._id);
+                        else if (results.events.length > 0) handleSelectEvent(results.events[0]._id);
+                      }
+                    }}
+                  />
+                  {query && (
+                    <button className="search-clear-btn" onClick={() => setQuery('')}>
+                      <X size={18} />
+                    </button>
+                  )}
+                </div>
+                <button
+                  className="search-modal-close-btn"
+                  onClick={() => setIsModalOpen(false)}
+                  title="Fechar"
+                >
+                  <X size={22} />
+                </button>
               </div>
-            ) : (
-              <div className="search-results-content">
-                {/* Artists Results */}
-                {results.artists.length > 0 && (
-                  <div className="search-category">
-                    <div className="search-category-title">
-                      <Mic2 size={14} /> Artistas ({results.artists.length})
-                    </div>
-                    {results.artists.map((artist) => (
-                      <div
-                        key={artist._id}
-                        className="search-result-item"
-                        onClick={() => handleSelectArtistItem(artist._id)}
-                      >
-                        {artist.imageUrl ? (
-                          <img src={artist.imageUrl} alt={artist.name} className="search-item-img" />
-                        ) : (
-                          <div className="search-item-placeholder"><Mic2 size={16} /></div>
-                        )}
-                        <div className="search-item-info">
-                          <h4>{artist.name}</h4>
-                          <span>{artist.genre}</span>
-                        </div>
-                        <ArrowRight size={14} className="search-arrow" />
-                      </div>
+
+              {/* Quick Suggestion Tags (when no query entered) */}
+              {!query.trim() && (
+                <div className="search-quick-tags">
+                  <span className="quick-tags-title">
+                    <Sparkles size={14} /> Sugestões rápidas:
+                  </span>
+                  <div className="tags-list">
+                    {['Hip-Hop', 'Afrobeat', 'Marrabenta', 'Gaza Sounds', 'Concertos', 'Xai-Xai'].map((tag) => (
+                      <button key={tag} className="tag-btn" onClick={() => handleQuickTag(tag)}>
+                        {tag}
+                      </button>
                     ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Body / Results */}
+              <div className="search-modal-body">
+                {loading && <div className="search-status-text">A procurar conteúdos...</div>}
+
+                {!loading && query.trim() && totalResults === 0 && (
+                  <div className="search-status-text empty">
+                    Nenhum resultado para "<strong>{query}</strong>". Tente outro nome ou género.
                   </div>
                 )}
 
-                {/* Events Results */}
-                {results.events.length > 0 && (
-                  <div className="search-category">
-                    <div className="search-category-title">
-                      <Calendar size={14} /> Eventos ({results.events.length})
-                    </div>
-                    {results.events.map((event) => (
-                      <div
-                        key={event._id}
-                        className="search-result-item"
-                        onClick={() => handleSelectEventItem(event._id)}
-                      >
-                        {event.imageUrl ? (
-                          <img src={event.imageUrl} alt={event.title} className="search-item-img event" />
-                        ) : (
-                          <div className="search-item-placeholder event"><Calendar size={16} /></div>
-                        )}
-                        <div className="search-item-info">
-                          <h4>{event.title}</h4>
-                          <span>{event.date} · {event.location}</span>
+                {!loading && totalResults > 0 && (
+                  <div className="search-results-grid">
+                    {/* Artists Section */}
+                    {results.artists.length > 0 && (
+                      <div className="search-section">
+                        <div className="search-section-header">
+                          <Mic2 size={16} /> Artistas ({results.artists.length})
                         </div>
-                        <ArrowRight size={14} className="search-arrow" />
+                        <div className="search-items-list">
+                          {results.artists.map((artist) => (
+                            <div
+                              key={artist._id}
+                              className="search-card-item"
+                              onClick={() => handleSelectArtist(artist._id)}
+                            >
+                              {artist.imageUrl ? (
+                                <img src={artist.imageUrl} alt={artist.name} className="search-card-img circle" />
+                              ) : (
+                                <div className="search-card-placeholder circle">
+                                  <Mic2 size={20} />
+                                </div>
+                              )}
+                              <div className="search-card-details">
+                                <h4>{artist.name}</h4>
+                                <span className="search-card-sub">{artist.genre}</span>
+                              </div>
+                              <ArrowRight size={16} className="search-card-arrow" />
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    ))}
+                    )}
+
+                    {/* Events Section */}
+                    {results.events.length > 0 && (
+                      <div className="search-section">
+                        <div className="search-section-header">
+                          <Calendar size={16} /> Eventos ({results.events.length})
+                        </div>
+                        <div className="search-items-list">
+                          {results.events.map((event) => (
+                            <div
+                              key={event._id}
+                              className="search-card-item"
+                              onClick={() => handleSelectEvent(event._id)}
+                            >
+                              {event.imageUrl ? (
+                                <img src={event.imageUrl} alt={event.title} className="search-card-img square" />
+                              ) : (
+                                <div className="search-card-placeholder square">
+                                  <Calendar size={20} />
+                                </div>
+                              )}
+                              <div className="search-card-details">
+                                <h4>{event.title}</h4>
+                                <span className="search-card-sub">{event.date} · {event.location}</span>
+                              </div>
+                              <ArrowRight size={16} className="search-card-arrow" />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
-            )}
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </>
   );
 };
 
