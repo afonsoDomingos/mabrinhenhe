@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mic2, ArrowLeft, Play, Pause, Music, Video, Globe, Share2, Disc } from 'lucide-react';
+import { Mic2, ArrowLeft, Play, Pause, Disc } from 'lucide-react';
+import { InstagramIcon, TiktokIcon, YoutubeIcon, SpotifyIcon, FacebookIcon } from '../components/SocialIcons';
 import './ArtistPage.css';
 
 const ArtistPage = ({ artistId, onBack }) => {
@@ -130,7 +131,7 @@ const ArtistPage = ({ artistId, onBack }) => {
                     className="social-link instagram"
                     aria-label="Instagram"
                   >
-                    <Globe size={16} /> Instagram
+                    <InstagramIcon size={16} /> Instagram
                   </a>
                 )}
                 {artist.tiktok && (
@@ -141,7 +142,7 @@ const ArtistPage = ({ artistId, onBack }) => {
                     className="social-link tiktok"
                     aria-label="TikTok"
                   >
-                    <Music size={16} /> TikTok
+                    <TiktokIcon size={16} /> TikTok
                   </a>
                 )}
                 {artist.youtube && (
@@ -152,7 +153,7 @@ const ArtistPage = ({ artistId, onBack }) => {
                     className="social-link youtube"
                     aria-label="YouTube"
                   >
-                    <Video size={16} /> YouTube
+                    <YoutubeIcon size={16} /> YouTube
                   </a>
                 )}
                 {artist.spotify && (
@@ -163,7 +164,7 @@ const ArtistPage = ({ artistId, onBack }) => {
                     className="social-link spotify"
                     aria-label="Spotify"
                   >
-                    <Music size={16} /> Spotify
+                    <SpotifyIcon size={16} /> Spotify
                   </a>
                 )}
                 {artist.facebook && (
@@ -174,7 +175,7 @@ const ArtistPage = ({ artistId, onBack }) => {
                     className="social-link facebook"
                     aria-label="Facebook"
                   >
-                    <Share2 size={16} /> Facebook
+                    <FacebookIcon size={16} /> Facebook
                   </a>
                 )}
               </div>

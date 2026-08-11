@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mic2, ArrowRight, Globe, Music, Video, Share2 } from 'lucide-react';
+import { Mic2, ArrowRight } from 'lucide-react';
+import { InstagramIcon, TiktokIcon, YoutubeIcon, SpotifyIcon, FacebookIcon } from './SocialIcons';
 import './Artists.css';
 
 const Artists = ({ onSelectArtist }) => {
@@ -85,7 +86,7 @@ const Artists = ({ onSelectArtist }) => {
                         title="Instagram"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <Globe size={15} />
+                        <InstagramIcon size={14} />
                       </a>
                     )}
                     {artist.tiktok && (
@@ -97,7 +98,7 @@ const Artists = ({ onSelectArtist }) => {
                         title="TikTok"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <Music size={15} />
+                        <TiktokIcon size={14} />
                       </a>
                     )}
                     {artist.youtube && (
@@ -109,7 +110,7 @@ const Artists = ({ onSelectArtist }) => {
                         title="YouTube"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <Video size={15} />
+                        <YoutubeIcon size={14} />
                       </a>
                     )}
                     {artist.spotify && (
@@ -121,7 +122,7 @@ const Artists = ({ onSelectArtist }) => {
                         title="Spotify"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <Music size={15} />
+                        <SpotifyIcon size={14} />
                       </a>
                     )}
                     {artist.facebook && (
@@ -133,7 +134,7 @@ const Artists = ({ onSelectArtist }) => {
                         title="Facebook"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <Share2 size={15} />
+                        <FacebookIcon size={14} />
                       </a>
                     )}
                   </div>
