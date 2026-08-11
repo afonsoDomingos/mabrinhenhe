@@ -3,13 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Image as ImageIcon, X, Calendar } from 'lucide-react';
 import './Gallery.css';
 
-const defaultPhotos = [
-  { _id: '1', title: 'Mabrinhenhe Anniversary Show', eventDate: '12 AGO 2026', imageUrl: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&auto=format&fit=crop&q=80', category: 'Concertos' },
-  { _id: '2', title: 'Noite Afro — Gaza Sounds', eventDate: '28 SET 2026', imageUrl: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=800&auto=format&fit=crop&q=80', category: 'Festivais' },
-  { _id: '3', title: 'Underground Flow', eventDate: '02 NOV 2026', imageUrl: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=800&auto=format&fit=crop&q=80', category: 'Hip-Hop' },
-  { _id: '4', title: 'Backstage & Ensaio', eventDate: '2026', imageUrl: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800&auto=format&fit=crop&q=80', category: 'Bastidores' },
-];
-
 const Gallery = () => {
   const [photos, setPhotos] = useState([]);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
@@ -19,13 +12,11 @@ const Gallery = () => {
     fetch('/api/gallery')
       .then((r) => r.json())
       .then((data) => {
-        if (Array.isArray(data) && data.length > 0) {
+        if (Array.isArray(data)) {
           setPhotos(data);
-        } else {
-          setPhotos(defaultPhotos);
         }
       })
-      .catch(() => setPhotos(defaultPhotos));
+      .catch(() => setPhotos([]));
   }, []);
 
   const categories = ['Todos', ...new Set(photos.map((p) => p.category || 'Geral'))];
@@ -54,37 +45,43 @@ const Gallery = () => {
         </div>
 
         {/* Grid */}
-        <motion.div className="gallery-grid" layout>
-          <AnimatePresence>
-            {filteredPhotos.map((photo) => (
-              <motion.div
-                key={photo._id}
-                className="gallery-item glass"
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
-                onClick={() => setSelectedPhoto(photo)}
-              >
-                <div className="gallery-img-wrap">
-                  <img src={photo.imageUrl} alt={photo.title} loading="lazy" />
-                  <div className="gallery-overlay">
-                    <ImageIcon size={28} color="white" />
+        {filteredPhotos.length === 0 ? (
+          <div className="empty-state" style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-secondary)' }}>
+            Nenhuma foto disponível na galeria. Adicione fotos reais no painel de administração.
+          </div>
+        ) : (
+          <motion.div className="gallery-grid" layout>
+            <AnimatePresence>
+              {filteredPhotos.map((photo) => (
+                <motion.div
+                  key={photo._id}
+                  className="gallery-item glass"
+                  layout
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.3 }}
+                  onClick={() => setSelectedPhoto(photo)}
+                >
+                  <div className="gallery-img-wrap">
+                    <img src={photo.imageUrl} alt={photo.title} loading="lazy" />
+                    <div className="gallery-overlay">
+                      <ImageIcon size={28} color="white" />
+                    </div>
                   </div>
-                </div>
-                <div className="gallery-info">
-                  <h4>{photo.title}</h4>
-                  {photo.eventDate && (
-                    <span className="gallery-date">
-                      <Calendar size={12} /> {photo.eventDate}
-                    </span>
-                  )}
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </motion.div>
+                  <div className="gallery-info">
+                    <h4>{photo.title}</h4>
+                    {photo.eventDate && (
+                      <span className="gallery-date">
+                        <Calendar size={12} /> {photo.eventDate}
+                      </span>
+                    )}
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        )}
 
         {/* Lightbox Modal */}
         <AnimatePresence>
