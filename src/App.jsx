@@ -8,6 +8,7 @@ import Community from './components/Community';
 import Gallery from './components/Gallery';
 import Contact from './components/Contact';
 import Newsletter from './components/Newsletter';
+import AudioPlayer from './components/AudioPlayer';
 import Footer from './components/Footer';
 import Admin from './pages/Admin';
 import ArtistPage from './pages/ArtistPage';
@@ -38,6 +39,7 @@ function App() {
         <Header onSelectArtist={(id) => { setSelectedEventId(null); setSelectedArtistId(id); }} onSelectEvent={(id) => { setSelectedArtistId(null); setSelectedEventId(id); }} />
         <ArtistPage artistId={selectedArtistId} onBack={() => setSelectedArtistId(null)} />
         <Footer />
+        <AudioPlayer />
       </div>
     );
   }
@@ -48,6 +50,7 @@ function App() {
         <Header onSelectArtist={(id) => { setSelectedEventId(null); setSelectedArtistId(id); }} onSelectEvent={(id) => { setSelectedArtistId(null); setSelectedEventId(id); }} />
         <EventPage eventId={selectedEventId} onBack={() => setSelectedEventId(null)} />
         <Footer />
+        <AudioPlayer />
       </div>
     );
   }
@@ -65,6 +68,7 @@ function App() {
         <Contact />
       </main>
       <Footer />
+      <AudioPlayer />
     </div>
   );
 }
