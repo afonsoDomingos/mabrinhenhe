@@ -142,7 +142,31 @@ const Contact = () => {
               {form.type === 'artista' && (
                 <label>
                   Género Musical
-                  <input value={form.genre} onChange={e => setForm({ ...form, genre: e.target.value })} placeholder="Hip-Hop, Afrobeat, Gospel..." />
+                  <input value={form.genre} onChange={e => setForm({ ...form, genre: e.target.value })} placeholder="Escreva ou clique abaixo (ex: Marrabenta • Pandza)" />
+                  <div className="genre-selector-pills" style={{ marginTop: '0.4rem' }}>
+                    <div className="genre-pills-list">
+                      {['Marrabenta', 'Pandza', 'Passada', 'Hip-Hop', 'Afrobeat', 'Amapiano', 'Kizomba', 'Gospel', 'Zouk', 'R&B', 'Trap', 'Tradicional'].map((g) => {
+                        const isSelected = form.genre?.includes(g);
+                        return (
+                          <button
+                            key={g}
+                            type="button"
+                            className={`genre-pill-btn ${isSelected ? 'selected' : ''}`}
+                            onClick={() => {
+                              if (!form.genre) setForm({ ...form, genre: g });
+                              else {
+                                const current = form.genre.split(' • ').map(s => s.trim()).filter(Boolean);
+                                if (current.includes(g)) setForm({ ...form, genre: current.filter(i => i !== g).join(' • ') });
+                                else setForm({ ...form, genre: [...current, g].join(' • ') });
+                              }
+                            }}
+                          >
+                            {isSelected ? '✓ ' : '+ '}{g}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </label>
               )}
             </div>

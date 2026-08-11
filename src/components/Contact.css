@@ -205,6 +205,42 @@
 .btn-submit:hover:not(:disabled) { opacity: 0.88; }
 .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
 
+/* ─── Genre Selector Pills ─── */
+.genre-selector-pills {
+  margin-top: 0.4rem;
+}
+
+.genre-pills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.genre-pill-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-secondary);
+  font-size: 0.73rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.genre-pill-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.genre-pill-btn.selected {
+  background: white;
+  color: black;
+  border-color: white;
+  font-weight: 700;
+}
+
 /* ─── Responsive ─── */
 @media (max-width: 860px) {
   .contact-layout { grid-template-columns: 1fr; }

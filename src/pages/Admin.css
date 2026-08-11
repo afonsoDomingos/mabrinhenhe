@@ -202,6 +202,51 @@
 
 .btn-add:hover { opacity: 0.85; }
 
+/* ─── Genre Selector Pills ─── */
+.genre-selector-pills {
+  margin-top: 0.5rem;
+}
+
+.genre-pills-label {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.35rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.genre-pills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.genre-pill-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.genre-pill-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.genre-pill-btn.selected {
+  background: white;
+  color: black;
+  border-color: white;
+  font-weight: 700;
+}
+
 .admin-loading {
   color: var(--text-secondary);
   padding: 2rem 0;

@@ -11,20 +11,36 @@ const emptyEvent = { title: '', date: '', time: '', location: '', artists: '', s
 const api = (url, options = {}, pw) =>
   fetch(url, { ...options, headers: { 'Content-Type': 'application/json', 'x-admin-password': pw, ...(options.headers || {}) } }).then((r) => r.json());
 
-// ─── Artist Form Modal ────────────────────────────────────────
+const MOZ_GENRES = [
+  'Marrabenta', 'Pandza', 'Passada', 'Hip-Hop', 'Afrobeat', 
+  'Amapiano', 'Kizomba', 'Gospel', 'Zouk', 'R&B', 'Trap', 'Tradicional'
+];
+
 const ArtistModal = ({ initial, onSave, onClose, pw }) => {
   const [form, setForm] = useState(initial || emptyArtist);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
 
+  const toggleGenre = (g) => {
+    if (!form.genre) {
+      setForm({ ...form, genre: g });
+    } else {
+      const current = form.genre.split(' • ').map(s => s.trim()).filter(Boolean);
+      if (current.includes(g)) {
+        const next = current.filter(item => item !== g);
+        setForm({ ...form, genre: next.join(' • ') });
+      } else {
+        setForm({ ...form, genre: [...current, g].join(' • ') });
+      }
+    }
+  };
+
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
     setUploading(true);
     setError('');
-
     const formData = new FormData();
     formData.append('image', file);
 
@@ -71,7 +87,30 @@ const ArtistModal = ({ initial, onSave, onClose, pw }) => {
         <form onSubmit={handleSubmit} className="modal-form">
           {error && <div className="form-error">{error}</div>}
           <label>Nome *<input required value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder="Nome do artista" /></label>
-          <label>Género *<input required value={form.genre} onChange={e => setForm({...form, genre: e.target.value})} placeholder="Hip-Hop • Afrobeat" /></label>
+          
+          <label>
+            Género *
+            <input required value={form.genre} onChange={e => setForm({...form, genre: e.target.value})} placeholder="Escreva ou selecione abaixo (ex: Marrabenta • Pandza)" />
+            <div className="genre-selector-pills">
+              <span className="genre-pills-label">Sugestões de Géneros:</span>
+              <div className="genre-pills-list">
+                {MOZ_GENRES.map((g) => {
+                  const isSelected = form.genre?.includes(g);
+                  return (
+                    <button
+                      key={g}
+                      type="button"
+                      className={`genre-pill-btn ${isSelected ? 'selected' : ''}`}
+                      onClick={() => toggleGenre(g)}
+                    >
+                      {isSelected ? '✓ ' : '+ '}{g}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </label>
+
           <label>Descrição *<textarea required value={form.description} onChange={e => setForm({...form, description: e.target.value})} rows={3} placeholder="Breve bio do artista..." /></label>
           
           <label>Foto do Artista (Cloudinary)
