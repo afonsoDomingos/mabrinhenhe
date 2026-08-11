@@ -111,12 +111,18 @@ const Events = ({ onSelectEvent }) => {
                   style={{ cursor: 'pointer' }}
                 >
                   {event.imageUrl ? (
-                    <img src={event.imageUrl} alt={event.title} className="event-poster-img" />
+                    <div className="event-poster-col">
+                      <img src={event.imageUrl} alt={event.title} className="event-poster-img" />
+                    </div>
                   ) : (
-                    <div className="event-date-badge">
-                      <span className="day">{day}</span>
-                      <span className="month">{month}</span>
-                      <span className="year">{year}</span>
+                    <div className="event-poster-col">
+                      <div className="event-poster-placeholder">
+                        <div className="event-date-badge">
+                          <span className="day">{day}</span>
+                          <span className="month">{month}</span>
+                          <span className="year">{year}</span>
+                        </div>
+                      </div>
                     </div>
                   )}
                   <div className="event-info">
