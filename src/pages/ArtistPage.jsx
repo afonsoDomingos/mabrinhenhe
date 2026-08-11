@@ -14,13 +14,48 @@ const ArtistPage = ({ artistId, onBack }) => {
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    setLoading(true);
+
     fetch(`/api/artists/${artistId}`)
       .then((r) => r.json())
       .then((data) => {
-        setArtist(data);
-        setLoading(false);
+        if (data && !data.error) {
+          setArtist(data);
+          setLoading(false);
+        } else {
+          // Fallback: fetch all artists and find by _id or name
+          return fetch('/api/artists')
+            .then((r) => r.json())
+            .then((all) => {
+              if (Array.isArray(all)) {
+                const found = all.find(
+                  (a) =>
+                    a._id === artistId ||
+                    a.name?.toLowerCase() === String(artistId).toLowerCase()
+                );
+                setArtist(found || null);
+              }
+              setLoading(false);
+            });
+        }
       })
-      .catch(() => setLoading(false));
+      .catch(() => {
+        // Fallback catch
+        fetch('/api/artists')
+          .then((r) => r.json())
+          .then((all) => {
+            if (Array.isArray(all)) {
+              const found = all.find(
+                (a) =>
+                  a._id === artistId ||
+                  a.name?.toLowerCase() === String(artistId).toLowerCase()
+              );
+              setArtist(found || null);
+            }
+            setLoading(false);
+          })
+          .catch(() => setLoading(false));
+      });
 
     fetch('/api/events')
       .then((r) => r.json())

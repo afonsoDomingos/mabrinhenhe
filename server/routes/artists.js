@@ -13,6 +13,34 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET single artist by ID or Name
+router.get('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    let artist = null;
+    
+    // If valid Mongo ObjectId
+    if (id.match(/^[0-9a-fA-F]{24}$/)) {
+      artist = await Artist.findById(id);
+    }
+    
+    // Fallback: search by name/slug if not found or not an ObjectId
+    if (!artist) {
+      artist = await Artist.findOne({
+        name: { $regex: new RegExp(`^${id.replace(/-/g, ' ')}$`, 'i') }
+      });
+    }
+
+    if (!artist) {
+      return res.status(404).json({ error: 'Artista não encontrado.' });
+    }
+    
+    res.json(artist);
+  } catch (err) {
+    res.status(500).json({ error: 'Erro ao buscar artista.' });
+  }
+});
+
 // POST create artist (admin only)
 router.post('/', requireAdmin, async (req, res) => {
   try {

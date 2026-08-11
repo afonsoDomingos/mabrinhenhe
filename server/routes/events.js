@@ -13,6 +13,23 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET single event by ID
+router.get('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    let event = null;
+    if (id.match(/^[0-9a-fA-F]{24}$/)) {
+      event = await Event.findById(id);
+    }
+    if (!event) {
+      return res.status(404).json({ error: 'Evento não encontrado.' });
+    }
+    res.json(event);
+  } catch (err) {
+    res.status(500).json({ error: 'Erro ao buscar evento.' });
+  }
+});
+
 // POST create event (admin only)
 router.post('/', requireAdmin, async (req, res) => {
   try {
