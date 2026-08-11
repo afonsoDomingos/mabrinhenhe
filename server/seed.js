@@ -2,6 +2,7 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const Artist = require('./models/Artist');
 const Event = require('./models/Event');
+const Post = require('./models/Post');
 
 const artists = [
   {
@@ -91,6 +92,30 @@ const events = [
   },
 ];
 
+const posts = [
+  {
+    user: 'Nomsa G.',
+    initials: 'NG',
+    content: '🔥 O show de ontem com o MC Xindza foi incrível! Que energia! Gaza é cultura! Mal posso esperar pelo próximo evento da Mabrinhenhe!',
+    likes: 34,
+    comments: 8,
+  },
+  {
+    user: 'Pedro F.',
+    initials: 'PF',
+    content: 'Alguém sabe quando saem os bilhetes para o Festival Marrabenta Viva? Já marquei na agenda! 🎶',
+    likes: 12,
+    comments: 5,
+  },
+  {
+    user: 'Lucia V.',
+    initials: 'LV',
+    content: 'A Bella Maputo é uma das melhores vozes de Moçambique! Orgulho da nossa província! 🌟 #GazaSounds #Mabrinhenhe',
+    likes: 57,
+    comments: 14,
+  },
+];
+
 async function seed() {
   console.log('🌱 A iniciar seed da base de dados...\n');
 
@@ -101,6 +126,7 @@ async function seed() {
     // Limpar dados existentes
     await Artist.deleteMany({});
     await Event.deleteMany({});
+    await Post.deleteMany({});
     console.log('🗑️  Dados anteriores removidos.\n');
 
     // Inserir artistas
@@ -112,6 +138,10 @@ async function seed() {
     const insertedEvents = await Event.insertMany(events);
     console.log(`\n🎪 ${insertedEvents.length} eventos inseridos:`);
     insertedEvents.forEach(e => console.log(`   → ${e.title} [${e.status}]`));
+
+    // Inserir posts da comunidade
+    const insertedPosts = await Post.insertMany(posts);
+    console.log(`\n💬 ${insertedPosts.length} postagens da comunidade inseridas.`);
 
     console.log('\n✅ Seed concluído com sucesso!');
     console.log('🚀 Podes agora iniciar o servidor: node server.js\n');

@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 
 const artistsRouter = require('../server/routes/artists');
 const eventsRouter = require('../server/routes/events');
+const postsRouter = require('../server/routes/posts');
 
 const app = express();
 
@@ -35,6 +36,7 @@ app.use(async (req, res, next) => {
 
 app.use('/api/artists', artistsRouter);
 app.use('/api/events', eventsRouter);
+app.use('/api/posts', postsRouter);
 
 app.get('/api/health', (req, res) =>
   res.json({ status: 'ok', db: isConnected ? 'connected' : 'disconnected' })
