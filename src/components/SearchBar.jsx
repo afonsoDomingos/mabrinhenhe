@@ -90,6 +90,15 @@ const SearchBar = ({ onSelectArtist, onSelectEvent }) => {
             setQuery(e.target.value);
             setIsOpen(true);
           }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              if (results.artists.length > 0) {
+                handleSelectArtistItem(results.artists[0]._id);
+              } else if (results.events.length > 0) {
+                handleSelectEventItem(results.events[0]._id);
+              }
+            }
+          }}
         />
         {query && (
           <button
