@@ -37,6 +37,7 @@ const Footer = () => (
     <div className="footer-bottom container">
       <span>© 2026 Mabrinhenhe Entretenimento. Todos os direitos reservados.</span>
       <span className="powered-by">
+        <img src="/afonso.png" alt="Afonso Domingos" className="powered-by-avatar" />
         Powered by <a href="https://isvibe.vercel.app/" target="_blank" rel="noreferrer">Vibe</a>
       </span>
     </div>
