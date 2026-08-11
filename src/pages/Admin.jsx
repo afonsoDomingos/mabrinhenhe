@@ -316,13 +316,19 @@ const Admin = () => {
               <div className="admin-table-wrap">
                 <table className="admin-table">
                   <thead>
-                    <tr><th>Nome</th><th>Género</th><th>Destaque</th><th>Ações</th></tr>
+                    <tr><th>Foto</th><th>Nome</th><th>Género</th><th>Destaque</th><th>Ações</th></tr>
                   </thead>
                   <tbody>
                     {artists.length === 0 ? (
-                      <tr><td colSpan={4} className="empty-row">Nenhum artista. Clique em "Novo Artista".</td></tr>
+                      <tr><td colSpan={5} className="empty-row">Nenhum artista. Clique em "Novo Artista".</td></tr>
                     ) : artists.map(a => (
                       <tr key={a._id}>
+                        <td>
+                          {a.imageUrl
+                            ? <img src={a.imageUrl} alt={a.name} style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover', border: '1px solid #444' }} />
+                            : <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', color: '#666' }}>N/A</div>
+                          }
+                        </td>
                         <td><strong>{a.name}</strong></td>
                         <td>{a.genre}</td>
                         <td>{a.featured ? <Star size={16} fill="white"/> : '—'}</td>
@@ -349,13 +355,19 @@ const Admin = () => {
               <div className="admin-table-wrap">
                 <table className="admin-table">
                   <thead>
-                    <tr><th>Título</th><th>Data</th><th>Local</th><th>Estado</th><th>Ações</th></tr>
+                    <tr><th>Cartaz</th><th>Título</th><th>Data</th><th>Local</th><th>Estado</th><th>Ações</th></tr>
                   </thead>
                   <tbody>
                     {events.length === 0 ? (
-                      <tr><td colSpan={5} className="empty-row">Nenhum evento. Clique em "Novo Evento".</td></tr>
+                      <tr><td colSpan={6} className="empty-row">Nenhum evento. Clique em "Novo Evento".</td></tr>
                     ) : events.map(ev => (
                       <tr key={ev._id}>
+                        <td>
+                          {ev.imageUrl
+                            ? <img src={ev.imageUrl} alt={ev.title} style={{ width: 56, height: 40, borderRadius: '4px', objectFit: 'cover', border: '1px solid #444' }} />
+                            : <div style={{ width: 56, height: 40, borderRadius: '4px', background: 'rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.65rem', color: '#666' }}>S/FOTO</div>
+                          }
+                        </td>
                         <td><strong>{ev.title}</strong></td>
                         <td>{ev.date}</td>
                         <td>{ev.location}</td>
