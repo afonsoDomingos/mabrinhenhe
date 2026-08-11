@@ -139,6 +139,13 @@ const ArtistPage = ({ artistId, onBack }) => {
 
   return (
     <div className="artist-page">
+      {/* Fixed top back bar */}
+      <div className="artist-page-topbar">
+        <button className="back-btn" onClick={onBack}>
+          <ArrowLeft size={16} /> Voltar aos Artistas
+        </button>
+      </div>
+
       {/* Hero Banner */}
       <motion.div
         className="artist-hero"
@@ -152,9 +159,6 @@ const ArtistPage = ({ artistId, onBack }) => {
         />
         <div className="artist-hero-overlay" />
         <div className="container artist-hero-content">
-          <button className="back-btn" onClick={onBack}>
-            <ArrowLeft size={18} /> Voltar aos Artistas
-          </button>
           <div className="artist-hero-info">
             {artist.imageUrl ? (
               <motion.img
