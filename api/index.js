@@ -10,7 +10,7 @@ const uploadRouter = require('../server/routes/upload');
 
 const app = express();
 
-app.use(cors());
+app.use(cors({ origin: '*' }));
 app.use(express.json());
 
 // Serverless DB Connection Caching
@@ -20,19 +20,27 @@ const connectDB = async () => {
     isConnected = true;
     return;
   }
+  if (!process.env.MONGODB_URI) {
+    console.error('MONGODB_URI env variable is missing!');
+    return;
+  }
   try {
-    if (process.env.MONGODB_URI) {
-      await mongoose.connect(process.env.MONGODB_URI);
-      isConnected = true;
-    }
+    await mongoose.connect(process.env.MONGODB_URI);
+    isConnected = true;
+    console.log('✅ MongoDB connected (serverless)');
   } catch (err) {
-    console.error('MongoDB connection error in Vercel function:', err.message);
+    console.error('❌ MongoDB error:', err.message);
   }
 };
 
+// Attach DB before every request
 app.use(async (req, res, next) => {
-  await connectDB();
-  next();
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    res.status(500).json({ error: 'Database connection failed.' });
+  }
 });
 
 app.use('/api/artists', artistsRouter);
@@ -41,7 +49,21 @@ app.use('/api/posts', postsRouter);
 app.use('/api/upload', uploadRouter);
 
 app.get('/api/health', (req, res) =>
-  res.json({ status: 'ok', db: isConnected ? 'connected' : 'disconnected' })
+  res.json({
+    status: 'ok',
+    db: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+    env: {
+      mongoUri: !!process.env.MONGODB_URI,
+      adminPw: !!process.env.ADMIN_PASSWORD,
+      cloudinary: !!process.env.CLOUDINARY_CLOUD_NAME,
+    },
+  })
 );
+
+// Catch-all JSON error handler — prevents Vercel HTML error pages
+app.use((err, req, res, _next) => {
+  console.error('Unhandled error:', err);
+  res.status(500).json({ error: err.message || 'Internal server error.' });
+});
 
 module.exports = app;
