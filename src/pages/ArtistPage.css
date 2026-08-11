@@ -167,10 +167,24 @@
   color: white;
 }
 
-.social-link.tiktok:hover {
-  background: #000;
-  border-color: #00f2fe;
-  color: #00f2fe;
+.social-link.share-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: white;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.social-link.share-btn:hover {
+  background: white;
+  color: black;
+  border-color: white;
+}
+
+.social-link.share-btn.copied {
+  background: #22c55e;
+  border-color: #22c55e;
+  color: white;
 }
 
 /* ─── Body ─── */

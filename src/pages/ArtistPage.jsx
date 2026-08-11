@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mic2, ArrowLeft, Play, Pause, Disc } from 'lucide-react';
+import { Mic2, ArrowLeft, Play, Pause, Disc, Share2, Check } from 'lucide-react';
 import { InstagramIcon, TiktokIcon, YoutubeIcon, SpotifyIcon, FacebookIcon } from '../components/SocialIcons';
 import './ArtistPage.css';
 
@@ -11,6 +11,25 @@ const ArtistPage = ({ artistId, onBack }) => {
   const [tracks, setTracks] = useState([]);
   const [playingTrackId, setPlayingTrackId] = useState(null);
   const [audioObj, setAudioObj] = useState(null);
+  const [copied, setCopied] = useState(false);
+
+  const handleShare = () => {
+    const shareUrl = `${window.location.origin}/?artist=${artist._id}`;
+    const shareData = {
+      title: `${artist.name} — Mabrinhenhe Entretenimento`,
+      text: `Confira o perfil oficial de ${artist.name} na Mabrinhenhe Entretenimento!`,
+      url: shareUrl,
+    };
+
+    if (navigator.share) {
+      navigator.share(shareData).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2500);
+      });
+    }
+  };
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -156,8 +175,17 @@ const ArtistPage = ({ artistId, onBack }) => {
               <h1>{artist.name}</h1>
               <p className="artist-page-genre">{artist.genre}</p>
 
-              {/* Social Links */}
+              {/* Social Links & Share */}
               <div className="social-links">
+                <button
+                  type="button"
+                  className={`social-link share-btn ${copied ? 'copied' : ''}`}
+                  onClick={handleShare}
+                  title="Partilhar perfil do artista"
+                >
+                  {copied ? <Check size={16} /> : <Share2 size={16} />}
+                  <span>{copied ? 'Link Copiado!' : 'Partilhar Perfil'}</span>
+                </button>
                 {artist.instagram && (
                   <a
                     href={artist.instagram}

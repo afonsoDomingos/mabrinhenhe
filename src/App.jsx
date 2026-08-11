@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import Header from './components/Header';
 import Hero from './components/Hero';
@@ -19,8 +19,19 @@ function App() {
   const [selectedArtistId, setSelectedArtistId] = useState(null);
   const [selectedEventId, setSelectedEventId] = useState(null);
 
-  React.useEffect(() => {
+  // Read URL query params on initial load
+  useEffect(() => {
     if (path !== '/admin') {
+      const searchParams = new URLSearchParams(window.location.search);
+      const artistParam = searchParams.get('artist');
+      const eventParam = searchParams.get('event');
+
+      if (artistParam) {
+        setSelectedArtistId(artistParam);
+      } else if (eventParam) {
+        setSelectedEventId(eventParam);
+      }
+
       fetch('/api/stats/visit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -29,6 +40,38 @@ function App() {
     }
   }, [path]);
 
+  const handleSelectArtist = (id) => {
+    setSelectedEventId(null);
+    setSelectedArtistId(id);
+    if (id) {
+      const url = new URL(window.location);
+      url.searchParams.set('artist', id);
+      url.searchParams.delete('event');
+      window.history.pushState({}, '', url);
+    } else {
+      const url = new URL(window.location);
+      url.searchParams.delete('artist');
+      url.searchParams.delete('event');
+      window.history.pushState({}, '', url.pathname);
+    }
+  };
+
+  const handleSelectEvent = (id) => {
+    setSelectedArtistId(null);
+    setSelectedEventId(id);
+    if (id) {
+      const url = new URL(window.location);
+      url.searchParams.set('event', id);
+      url.searchParams.delete('artist');
+      window.history.pushState({}, '', url);
+    } else {
+      const url = new URL(window.location);
+      url.searchParams.delete('artist');
+      url.searchParams.delete('event');
+      window.history.pushState({}, '', url.pathname);
+    }
+  };
+
   if (path === '/admin') {
     return <Admin />;
   }
@@ -36,8 +79,8 @@ function App() {
   if (selectedArtistId) {
     return (
       <div className="app">
-        <Header onSelectArtist={(id) => { setSelectedEventId(null); setSelectedArtistId(id); }} onSelectEvent={(id) => { setSelectedArtistId(null); setSelectedEventId(id); }} />
-        <ArtistPage artistId={selectedArtistId} onBack={() => setSelectedArtistId(null)} />
+        <Header onSelectArtist={handleSelectArtist} onSelectEvent={handleSelectEvent} />
+        <ArtistPage artistId={selectedArtistId} onBack={() => handleSelectArtist(null)} />
         <Footer />
         <AudioPlayer />
       </div>
@@ -47,8 +90,8 @@ function App() {
   if (selectedEventId) {
     return (
       <div className="app">
-        <Header onSelectArtist={(id) => { setSelectedEventId(null); setSelectedArtistId(id); }} onSelectEvent={(id) => { setSelectedArtistId(null); setSelectedEventId(id); }} />
-        <EventPage eventId={selectedEventId} onBack={() => setSelectedEventId(null)} />
+        <Header onSelectArtist={handleSelectArtist} onSelectEvent={handleSelectEvent} />
+        <EventPage eventId={selectedEventId} onBack={() => handleSelectEvent(null)} />
         <Footer />
         <AudioPlayer />
       </div>
@@ -57,11 +100,11 @@ function App() {
 
   return (
     <div className="app">
-      <Header onSelectArtist={(id) => setSelectedArtistId(id)} onSelectEvent={(id) => setSelectedEventId(id)} />
+      <Header onSelectArtist={handleSelectArtist} onSelectEvent={handleSelectEvent} />
       <main>
         <Hero />
-        <Artists onSelectArtist={(id) => setSelectedArtistId(id)} />
-        <Events onSelectEvent={(id) => setSelectedEventId(id)} />
+        <Artists onSelectArtist={handleSelectArtist} />
+        <Events onSelectEvent={handleSelectEvent} />
         <Gallery />
         <Community />
         <Newsletter />
