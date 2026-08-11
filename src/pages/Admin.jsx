@@ -4,7 +4,7 @@ import './Admin.css';
 
 const ADMIN_PASSWORD_KEY = 'mabrinhenhe_admin_pw';
 
-const emptyArtist = { name: '', genre: '', description: '', featured: false, imageUrl: '' };
+const emptyArtist = { name: '', genre: '', description: '', bio: '', featured: false, imageUrl: '', instagram: '', tiktok: '', youtube: '', spotify: '', facebook: '' };
 const emptyEvent = { title: '', date: '', time: '', location: '', artists: '', status: 'upcoming', description: '', ticketUrl: '', imageUrl: '' };
 
 // ─── API helpers ──────────────────────────────────────────────
@@ -111,8 +111,34 @@ const ArtistModal = ({ initial, onSave, onClose, pw }) => {
             </div>
           </label>
 
-          <label>Descrição *<textarea required value={form.description} onChange={e => setForm({...form, description: e.target.value})} rows={3} placeholder="Breve bio do artista..." /></label>
+          <label>Descrição *<textarea required value={form.description} onChange={e => setForm({...form, description: e.target.value})} rows={3} placeholder="Breve descrição do artista..." /></label>
           
+          <label>Bio Completa (opcional)<textarea value={form.bio || ''} onChange={e => setForm({...form, bio: e.target.value})} rows={4} placeholder="Biografia detalhada, história, conquistas... (pode usar Enter para parágrafos)" /></label>
+
+          {/* Social Links Section */}
+          <div className="modal-section-divider">
+            <span>🔗 Redes Sociais</span>
+          </div>
+          <div className="form-row-2">
+            <label>Instagram
+              <input value={form.instagram || ''} onChange={e => setForm({...form, instagram: e.target.value})} placeholder="https://instagram.com/..." />
+            </label>
+            <label>TikTok
+              <input value={form.tiktok || ''} onChange={e => setForm({...form, tiktok: e.target.value})} placeholder="https://tiktok.com/@..." />
+            </label>
+          </div>
+          <div className="form-row-2">
+            <label>YouTube
+              <input value={form.youtube || ''} onChange={e => setForm({...form, youtube: e.target.value})} placeholder="https://youtube.com/channel/..." />
+            </label>
+            <label>Spotify
+              <input value={form.spotify || ''} onChange={e => setForm({...form, spotify: e.target.value})} placeholder="https://open.spotify.com/artist/..." />
+            </label>
+          </div>
+          <label>Facebook / Página Artística
+            <input value={form.facebook || ''} onChange={e => setForm({...form, facebook: e.target.value})} placeholder="https://facebook.com/..." />
+          </label>
+
           <label>Foto do Artista (Cloudinary)
             <input type="file" accept="image/*" onChange={handleImageUpload} disabled={uploading} />
             {uploading && <small style={{ color: '#aaa', marginTop: '0.2rem' }}>A carregar foto para o Cloudinary...</small>}
