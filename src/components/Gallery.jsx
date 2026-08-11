@@ -26,13 +26,25 @@ const Gallery = () => {
   return (
     <section className="gallery-section" id="galeria">
       <div className="container">
-        <div className="section-header">
+        <motion.div
+          className="section-header"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6 }}
+        >
           <h2>GALERIA DE FOTOS</h2>
           <p>Momentos inesquecíveis dos nossos eventos na Província de Gaza</p>
-        </div>
+        </motion.div>
 
         {/* Categories */}
-        <div className="gallery-categories">
+        <motion.div
+          className="gallery-categories"
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
           {categories.map((cat) => (
             <button
               key={cat}
@@ -42,7 +54,7 @@ const Gallery = () => {
               {cat}
             </button>
           ))}
-        </div>
+        </motion.div>
 
         {/* Grid */}
         {filteredPhotos.length === 0 ? (

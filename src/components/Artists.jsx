@@ -31,10 +31,16 @@ const Artists = ({ onSelectArtist }) => {
   return (
     <section className="artists-section" id="artistas">
       <div className="container">
-        <div className="section-header">
+        <motion.div
+          className="section-header"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6 }}
+        >
           <h2>NOSSOS ARTISTAS</h2>
           <p>Talentos únicos promovidos pela Mabrinhenhe Entretenimento</p>
-        </div>
+        </motion.div>
 
         {loading ? (
           <div className="loading-state">A carregar artistas...</div>

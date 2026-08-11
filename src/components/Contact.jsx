@@ -94,10 +94,16 @@ const Contact = () => {
   return (
     <section className="contact-section" id="contacto">
       <div className="container">
-        <div className="section-header">
+        <motion.div
+          className="section-header"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6 }}
+        >
           <h2>TRABALHA CONNOSCO</h2>
           <p>Artistas, patrocinadores ou imprensa — submeta a sua candidatura</p>
-        </div>
+        </motion.div>
 
         <div className="contact-layout">
           {/* Left: Info */}

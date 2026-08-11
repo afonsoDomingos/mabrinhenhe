@@ -76,10 +76,16 @@ const Community = () => {
   return (
     <section className="community-section" id="comunidade">
       <div className="container">
-        <div className="section-header">
+        <motion.div
+          className="section-header"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6 }}
+        >
           <h2>COMUNIDADE</h2>
           <p>Um espaço de diversão, crescimento e socialização saudável</p>
-        </div>
+        </motion.div>
 
         <div className="community-layout">
           {/* Feed */}
@@ -156,7 +162,13 @@ const Community = () => {
           </div>
 
           {/* Sidebar */}
-          <div className="community-sidebar">
+          <motion.div
+            className="community-sidebar"
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
             <div className="sidebar-widget glass">
               <h4><Users size={18} /> Comunidade Activa</h4>
               <div className="stat-row"><span>Publicações</span><strong>{posts.length}</strong></div>
@@ -170,7 +182,7 @@ const Community = () => {
               <p className="trend">#MarrabentaViva</p>
               <p className="trend">#MCXindza</p>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
