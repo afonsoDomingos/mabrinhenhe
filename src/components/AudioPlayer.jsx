@@ -3,29 +3,8 @@ import { Play, Pause, Volume2, VolumeX, Music, X, ChevronUp, ChevronDown } from 
 import { motion, AnimatePresence } from 'framer-motion';
 import './AudioPlayer.css';
 
-// Sample royalty-free audio tracks for featured Gaza sounds preview
-const sampleTracks = [
-  {
-    id: 1,
-    title: 'Gaza Beats (Afrobeat Mix)',
-    artist: 'MC Xindza ft. DJ Nyanga',
-    src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
-  },
-  {
-    id: 2,
-    title: 'Marrabenta Vibrations',
-    artist: 'Grupo Chibuto',
-    src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
-  },
-  {
-    id: 3,
-    title: 'Xai-Xai Nights',
-    artist: 'Bella Maputo',
-    src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
-  },
-];
-
 const AudioPlayer = () => {
+  const [tracks, setTracks] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
@@ -35,19 +14,33 @@ const AudioPlayer = () => {
 
   const audioRef = useRef(null);
 
-  const currentTrack = sampleTracks[currentTrackIndex];
+  useEffect(() => {
+    fetch('/api/tracks')
+      .then((r) => r.json())
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setTracks(data);
+        } else {
+          setTracks([]);
+        }
+      })
+      .catch(() => setTracks([]));
+  }, []);
+
+  const currentTrack = tracks[currentTrackIndex];
 
   useEffect(() => {
-    if (audioRef.current) {
+    if (audioRef.current && currentTrack) {
       if (isPlaying) {
         audioRef.current.play().catch(() => setIsPlaying(false));
       } else {
         audioRef.current.pause();
       }
     }
-  }, [isPlaying, currentTrackIndex]);
+  }, [isPlaying, currentTrackIndex, currentTrack]);
 
   const togglePlay = () => {
+    if (!currentTrack) return;
     setIsPlaying(!isPlaying);
   };
 
@@ -67,17 +60,18 @@ const AudioPlayer = () => {
   };
 
   const handleNext = () => {
-    setCurrentTrackIndex((prev) => (prev + 1) % sampleTracks.length);
+    if (tracks.length === 0) return;
+    setCurrentTrackIndex((prev) => (prev + 1) % tracks.length);
     setIsPlaying(true);
   };
 
-  if (!isVisible) return null;
+  if (!isVisible || tracks.length === 0 || !currentTrack) return null;
 
   return (
     <div className="audio-player-wrapper">
       <audio
         ref={audioRef}
-        src={currentTrack.src}
+        src={currentTrack.audioUrl}
         onTimeUpdate={handleTimeUpdate}
         onEnded={handleNext}
       />
@@ -103,7 +97,7 @@ const AudioPlayer = () => {
             {!isMinimized && (
               <div className="audio-info">
                 <span className="audio-track-title">{currentTrack.title}</span>
-                <span className="audio-artist-name">{currentTrack.artist}</span>
+                <span className="audio-artist-name">{currentTrack.artistName}</span>
               </div>
             )}
 

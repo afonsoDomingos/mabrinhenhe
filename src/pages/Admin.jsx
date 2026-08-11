@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Mic2, Calendar, LogOut, Plus, Pencil, Trash2, X, Check, Star, Mail, CheckCircle, Clock, XCircle, Home, Image as ImageIcon, LayoutDashboard, Eye, MessageSquare, Bell } from 'lucide-react';
+import { Mic2, Calendar, LogOut, Plus, Pencil, Trash2, X, Check, Star, Mail, CheckCircle, Clock, XCircle, Home, Image as ImageIcon, LayoutDashboard, Eye, MessageSquare, Bell, Music } from 'lucide-react';
 import './Admin.css';
 
 const ADMIN_PASSWORD_KEY = 'mabrinhenhe_admin_pw';
@@ -294,6 +294,92 @@ const GalleryModal = ({ initial, onSave, onClose, pw }) => {
 };
 
 
+// ─── Track Form Modal ──────────────────────────────────────────
+const emptyTrack = { title: '', artistName: '', audioUrl: '' };
+const TrackModal = ({ onSave, onClose, pw }) => {
+  const [form, setForm] = useState(emptyTrack);
+  const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleAudioUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setUploading(true);
+    setError('');
+
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { 'x-admin-password': pw },
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      setForm((prev) => ({ ...prev, audioUrl: data.url }));
+    } catch (err) {
+      setError('Erro no upload do áudio: ' + err.message);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!form.audioUrl) {
+      setError('Por favor, introduza o link do áudio ou faça upload do ficheiro.');
+      return;
+    }
+    setSaving(true);
+    setError('');
+    try {
+      const result = await api('/api/tracks', { method: 'POST', body: JSON.stringify(form) }, pw);
+      if (result.error) throw new Error(result.error);
+      onSave();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-header">
+          <h3>Nova Música (Player Flutuante)</h3>
+          <button onClick={onClose}><X size={20} /></button>
+        </div>
+        <form onSubmit={handleSubmit} className="modal-form">
+          {error && <div className="form-error">{error}</div>}
+          <label>Título da Música *<input required value={form.title} onChange={e => setForm({...form, title: e.target.value})} placeholder="Ex: Gaza Beats (Afrobeat Mix)" /></label>
+          <label>Nome do Artista *<input required value={form.artistName} onChange={e => setForm({...form, artistName: e.target.value})} placeholder="Ex: MC Xindza" /></label>
+          
+          <label>Ficheiro de Áudio MP3 (Cloudinary ou Link MP3) *
+            <input type="file" accept="audio/*" onChange={handleAudioUpload} disabled={uploading} />
+            {uploading && <small style={{ color: '#aaa', marginTop: '0.2rem' }}>A carregar áudio para o Cloudinary...</small>}
+            <input
+              style={{ marginTop: '0.5rem' }}
+              value={form.audioUrl}
+              onChange={e => setForm({...form, audioUrl: e.target.value})}
+              placeholder="https://.../musica.mp3"
+            />
+          </label>
+
+          <div className="modal-actions">
+            <button type="button" className="btn-cancel" onClick={onClose}>Cancelar</button>
+            <button type="submit" className="btn-save" disabled={saving || uploading}>{saving ? 'A guardar...' : <><Check size={16}/> Guardar</>}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
 // ─── Main Admin Page ──────────────────────────────────────────
 const Admin = () => {
   const [pw, setPw] = useState(() => sessionStorage.getItem(ADMIN_PASSWORD_KEY) || '');
@@ -305,6 +391,8 @@ const Admin = () => {
   const [contacts, setContacts] = useState([]);
   const [gallery, setGallery] = useState([]);
   const [subscribers, setSubscribers] = useState([]);
+  const [tracks, setTracks] = useState([]);
+  const [trackModal, setTrackModal] = useState(null);
   const [stats, setStats] = useState({ artists: 0, events: 0, posts: 0, contacts: 0, gallery: 0, visits: 0, recentVisits: [] });
   const [artistModal, setArtistModal] = useState(null); // null | {} | {artist}
   const [eventModal, setEventModal] = useState(null);
@@ -317,13 +405,14 @@ const Admin = () => {
     if (!pw) return;
     setLoading(true);
     try {
-      const [a, e, c, g, st, sb] = await Promise.all([
+      const [a, e, c, g, st, sb, tr] = await Promise.all([
         fetch('/api/artists').then(r => r.json()),
         fetch('/api/events').then(r => r.json()),
         fetch('/api/contact', { headers: { 'x-admin-password': pw } }).then(r => r.json()),
         fetch('/api/gallery').then(r => r.json()),
         fetch('/api/stats', { headers: { 'x-admin-password': pw } }).then(r => r.json()),
         fetch('/api/subscribers', { headers: { 'x-admin-password': pw } }).then(r => r.json()),
+        fetch('/api/tracks').then(r => r.json()),
       ]);
       setArtists(Array.isArray(a) ? a : []);
       setEvents(Array.isArray(e) ? e : []);
@@ -331,6 +420,7 @@ const Admin = () => {
       setGallery(Array.isArray(g) ? g : []);
       if (st && !st.error) setStats(st);
       setSubscribers(Array.isArray(sb) ? sb : []);
+      setTracks(Array.isArray(tr) ? tr : []);
     } finally {
       setLoading(false);
     }
@@ -382,6 +472,12 @@ const Admin = () => {
   const deleteSubscriber = async (id) => {
     if (!window.confirm('Remover este subscritor?')) return;
     await api(`/api/subscribers/${id}`, { method: 'DELETE' }, pw);
+    fetchAll();
+  };
+
+  const deleteTrack = async (id) => {
+    if (!window.confirm('Apagar esta música?')) return;
+    await api(`/api/tracks/${id}`, { method: 'DELETE' }, pw);
     fetchAll();
   };
   const deleteContact = async (id) => {
@@ -436,6 +532,7 @@ const Admin = () => {
           <button className={tab === 'dashboard' ? 'active' : ''} onClick={() => setTab('dashboard')}><LayoutDashboard size={18}/> Dashboard</button>
           <button className={tab === 'artists' ? 'active' : ''} onClick={() => setTab('artists')}><Mic2 size={18}/> Artistas</button>
           <button className={tab === 'events' ? 'active' : ''} onClick={() => setTab('events')}><Calendar size={18}/> Eventos</button>
+          <button className={tab === 'tracks' ? 'active' : ''} onClick={() => setTab('tracks')}><Music size={18}/> Músicas ({tracks.length})</button>
           <button className={tab === 'gallery' ? 'active' : ''} onClick={() => setTab('gallery')}><ImageIcon size={18}/> Galeria</button>
           <button className={tab === 'contacts' ? 'active' : ''} onClick={() => setTab('contacts')}>
             <Mail size={18}/> Candidaturas
@@ -719,6 +816,37 @@ const Admin = () => {
             )}
           </>
         )}
+        {tab === 'tracks' && (
+          <>
+            <div className="admin-topbar">
+              <h2><Music size={22}/> Músicas do Player <span className="count">{tracks.length}</span></h2>
+              <button className="btn-add" onClick={() => setTrackModal({})}><Plus size={18}/> Nova Música</button>
+            </div>
+            {loading ? <p className="admin-loading">A carregar...</p> : (
+              <div className="admin-table-wrap">
+                <table className="admin-table">
+                  <thead>
+                    <tr><th>Título</th><th>Artista</th><th>Ficheiro de Áudio</th><th>Ações</th></tr>
+                  </thead>
+                  <tbody>
+                    {tracks.length === 0 ? (
+                      <tr><td colSpan={4} className="empty-row">Nenhuma música no player. Clique em "Nova Música".</td></tr>
+                    ) : tracks.map(t => (
+                      <tr key={t._id}>
+                        <td><strong>{t.title}</strong></td>
+                        <td>{t.artistName}</td>
+                        <td><small style={{ color: '#888', wordBreak: 'break-all' }}>{t.audioUrl}</small></td>
+                        <td className="actions-cell">
+                          <button className="icon-btn delete" onClick={() => deleteTrack(t._id)}><Trash2 size={15}/></button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </>
+        )}
       </main>
 
       {/* Modals */}
@@ -744,6 +872,13 @@ const Admin = () => {
           pw={pw}
           onClose={() => setGalleryModal(null)}
           onSave={() => { setGalleryModal(null); fetchAll(); }}
+        />
+      )}
+      {trackModal !== null && (
+        <TrackModal
+          pw={pw}
+          onClose={() => setTrackModal(null)}
+          onSave={() => { setTrackModal(null); fetchAll(); }}
         />
       )}
     </div>
