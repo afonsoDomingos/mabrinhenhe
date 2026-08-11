@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import Header from './components/Header';
 import Hero from './components/Hero';
@@ -9,12 +9,36 @@ import Gallery from './components/Gallery';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Admin from './pages/Admin';
+import ArtistPage from './pages/ArtistPage';
+import EventPage from './pages/EventPage';
 
 function App() {
   const path = window.location.pathname;
+  const [selectedArtistId, setSelectedArtistId] = useState(null);
+  const [selectedEventId, setSelectedEventId] = useState(null);
 
   if (path === '/admin') {
     return <Admin />;
+  }
+
+  if (selectedArtistId) {
+    return (
+      <div className="app">
+        <Header />
+        <ArtistPage artistId={selectedArtistId} onBack={() => setSelectedArtistId(null)} />
+        <Footer />
+      </div>
+    );
+  }
+
+  if (selectedEventId) {
+    return (
+      <div className="app">
+        <Header />
+        <EventPage eventId={selectedEventId} onBack={() => setSelectedEventId(null)} />
+        <Footer />
+      </div>
+    );
   }
 
   return (
@@ -22,8 +46,8 @@ function App() {
       <Header />
       <main>
         <Hero />
-        <Artists />
-        <Events />
+        <Artists onSelectArtist={(id) => setSelectedArtistId(id)} />
+        <Events onSelectEvent={(id) => setSelectedEventId(id)} />
         <Gallery />
         <Community />
         <Contact />

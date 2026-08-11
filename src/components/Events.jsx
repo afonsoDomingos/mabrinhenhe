@@ -8,7 +8,7 @@ const cardVariants = {
   visible: { opacity: 1, x: 0, transition: { duration: 0.5 } },
 };
 
-const Events = () => {
+const Events = ({ onSelectEvent }) => {
   const [events, setEvents] = useState([]);
   const [filter, setFilter] = useState('upcoming');
   const [loading, setLoading] = useState(true);
@@ -52,7 +52,16 @@ const Events = () => {
             {filtered.map((event) => {
               const { day, month, year } = dateParts(event.date);
               return (
-                <motion.div key={event._id} className="event-card glass" variants={cardVariants} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+                <motion.div
+                  key={event._id}
+                  className="event-card glass"
+                  variants={cardVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true }}
+                  onClick={() => onSelectEvent && onSelectEvent(event._id)}
+                  style={{ cursor: 'pointer' }}
+                >
                   {event.imageUrl ? (
                     <img src={event.imageUrl} alt={event.title} className="event-poster-img" />
                   ) : (
@@ -68,14 +77,12 @@ const Events = () => {
                     <div className="event-meta">
                       <span><Clock size={14} /> {event.time}</span>
                       <span><MapPin size={14} /> {event.location}</span>
-                      <span><Calendar size={14} /> {(event.artists || []).join(', ')}</span>
+                      <span><Calendar size={14} /> {Array.isArray(event.artists) ? event.artists.join(', ') : event.artists}</span>
                     </div>
                   </div>
-                  {event.status === 'upcoming' && (
-                    <a href={event.ticketUrl || '#'} className="event-btn" target="_blank" rel="noreferrer">
-                      Bilhetes <ChevronRight size={16} />
-                    </a>
-                  )}
+                  <div className="event-btn">
+                    Ver Detalhes <ChevronRight size={16} />
+                  </div>
                 </motion.div>
               );
             })}
