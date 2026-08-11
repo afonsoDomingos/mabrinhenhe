@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Shield } from 'lucide-react';
 import SearchBar from './SearchBar';
 import './Header.css';
 
@@ -38,7 +38,9 @@ const Header = ({ onSelectArtist, onSelectEvent }) => {
           <button onClick={() => handleNav('galeria')} className="nav-link">Galeria</button>
           <button onClick={() => handleNav('comunidade')} className="nav-link">Comunidade</button>
           <button onClick={() => handleNav('contacto')} className="nav-link nav-cta">Candidatura</button>
-          <a href="/admin" className="nav-link admin-nav-link" title="Painel Admin">Admin</a>
+          <a href="/admin" className="admin-icon-btn" title="Painel Admin" aria-label="Painel Admin">
+            <Shield size={18} />
+          </a>
         </nav>
 
         <button className="mobile-toggle" onClick={() => setIsOpen(!isOpen)} aria-label="Menu">
