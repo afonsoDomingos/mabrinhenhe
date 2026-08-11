@@ -80,7 +80,22 @@ const SearchBar = ({ onSelectArtist, onSelectEvent }) => {
   return (
     <div className="search-bar-wrapper" ref={searchRef}>
       <div className={`search-input-box ${isOpen ? 'active' : ''}`}>
-        <Search size={16} className="search-icon" />
+        <button
+          className="search-icon-btn"
+          onClick={() => {
+            if (results.artists.length > 0) {
+              handleSelectArtistItem(results.artists[0]._id);
+            } else if (results.events.length > 0) {
+              handleSelectEventItem(results.events[0]._id);
+            } else {
+              setIsOpen(true);
+            }
+          }}
+          title="Pesquisar"
+          type="button"
+        >
+          <Search size={16} className="search-icon" />
+        </button>
         <input
           type="text"
           placeholder="Pesquisar artistas, eventos, géneros..."
