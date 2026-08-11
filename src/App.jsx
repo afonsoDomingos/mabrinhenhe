@@ -13,6 +13,7 @@ import Footer from './components/Footer';
 import Admin from './pages/Admin';
 import ArtistPage from './pages/ArtistPage';
 import EventPage from './pages/EventPage';
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   const path = window.location.pathname;
@@ -83,6 +84,7 @@ function App() {
         <ArtistPage artistId={selectedArtistId} onBack={() => handleSelectArtist(null)} />
         <Footer />
         <AudioPlayer />
+        <ScrollToTop />
       </div>
     );
   }
@@ -94,6 +96,7 @@ function App() {
         <EventPage eventId={selectedEventId} onBack={() => handleSelectEvent(null)} />
         <Footer />
         <AudioPlayer />
+        <ScrollToTop />
       </div>
     );
   }
@@ -112,6 +115,7 @@ function App() {
       </main>
       <Footer />
       <AudioPlayer />
+      <ScrollToTop />
     </div>
   );
 }
