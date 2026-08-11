@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mic2, ArrowLeft, Instagram, Music, Youtube, Facebook } from 'lucide-react';
+import { Mic2, ArrowLeft, Music, Globe, Video, Share2 } from 'lucide-react';
 import './ArtistPage.css';
 
 const ArtistPage = ({ artistId, onBack }) => {
@@ -78,27 +78,27 @@ const ArtistPage = ({ artistId, onBack }) => {
               <div className="social-links">
                 {artist.instagram && (
                   <a href={artist.instagram} target="_blank" rel="noreferrer" className="social-link instagram" aria-label="Instagram">
-                    <Instagram size={20}/> Instagram
+                    <Globe size={18}/> Instagram
                   </a>
                 )}
                 {artist.tiktok && (
                   <a href={artist.tiktok} target="_blank" rel="noreferrer" className="social-link tiktok" aria-label="TikTok">
-                    <Music size={20}/> TikTok
+                    <Music size={18}/> TikTok
                   </a>
                 )}
                 {artist.youtube && (
                   <a href={artist.youtube} target="_blank" rel="noreferrer" className="social-link youtube" aria-label="YouTube">
-                    <Youtube size={20}/> YouTube
+                    <Video size={18}/> YouTube
                   </a>
                 )}
                 {artist.spotify && (
                   <a href={artist.spotify} target="_blank" rel="noreferrer" className="social-link spotify" aria-label="Spotify">
-                    <Music size={20}/> Spotify
+                    <Music size={18}/> Spotify
                   </a>
                 )}
                 {artist.facebook && (
                   <a href={artist.facebook} target="_blank" rel="noreferrer" className="social-link facebook" aria-label="Facebook">
-                    <Facebook size={20}/> Facebook
+                    <Share2 size={18}/> Facebook
                   </a>
                 )}
               </div>
@@ -146,7 +146,7 @@ const ArtistPage = ({ artistId, onBack }) => {
               <div className="artist-youtube-embed">
                 <h3>▶ Canal no YouTube</h3>
                 <a href={artist.youtube} target="_blank" rel="noreferrer" className="youtube-link-btn">
-                  <Youtube size={20}/> Abrir Canal no YouTube
+                  <Video size={20}/> Abrir Canal no YouTube
                 </a>
               </div>
             )}

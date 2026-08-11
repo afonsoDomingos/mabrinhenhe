@@ -109,6 +109,7 @@
   padding: 0.75rem 1rem;
   border-radius: 6px;
   font-size: 0.9rem;
+  font-weight: 500;
   color: var(--text-secondary);
   background: none;
   border: none;
@@ -116,17 +117,13 @@
   transition: all 0.2s;
   font-family: inherit;
   text-decoration: none;
+  text-align: left;
+  width: 100%;
 }
 
 .sidebar-home-link:hover {
   background: rgba(255, 255, 255, 0.08);
   color: var(--text-primary);
-}
-  font-weight: 500;
-  color: var(--text-secondary);
-  text-align: left;
-  transition: all 0.2s;
-  width: 100%;
 }
 
 .sidebar-nav button:hover,
