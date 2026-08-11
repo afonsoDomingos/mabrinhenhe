@@ -37,6 +37,9 @@ const Footer = () => (
     </div>
     <div className="footer-bottom container">
       <span>© 2026 Mabrinhenhe Entretenimento. Todos os direitos reservados.</span>
+      <span className="powered-by">
+        Powered by <a href="https://isvibe.vercel.app/" target="_blank" rel="noreferrer">Vibe</a>
+      </span>
     </div>
   </footer>
 );

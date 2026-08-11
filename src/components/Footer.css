@@ -91,9 +91,24 @@
 
 .footer-bottom {
   padding: 1.5rem 2rem;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: var(--text-secondary);
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.powered-by a {
+  color: var(--text-primary);
+  font-weight: 600;
+  text-decoration: underline;
+  transition: opacity 0.2s;
+}
+
+.powered-by a:hover {
+  opacity: 0.8;
 }
 
 @media (max-width: 768px) {
