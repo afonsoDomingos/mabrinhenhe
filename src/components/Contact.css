@@ -14,8 +14,8 @@
 .success-box {
   text-align: center;
   padding: 3rem 2.5rem;
-  border-radius: 12px;
-  max-width: 480px;
+  border-radius: 16px;
+  max-width: 520px;
   width: 100%;
 }
 
@@ -45,9 +45,13 @@
   font-size: 0.9rem;
   color: var(--text-secondary);
   transition: all 0.2s;
+  background: rgba(255, 255, 255, 0.05);
 }
 
-.btn-retry:hover { color: white; border-color: white; }
+.btn-retry:hover {
+  color: white;
+  border-color: white;
+}
 
 /* ─── Layout ─── */
 .contact-layout {
@@ -59,17 +63,17 @@
 
 /* ─── Info ─── */
 .contact-info h3 {
-  font-size: 1.4rem;
-  font-weight: 800;
+  font-size: 1.8rem;
+  font-weight: 900;
   letter-spacing: 2px;
   margin-bottom: 0.75rem;
 }
 
 .contact-tagline {
   color: var(--text-secondary);
-  line-height: 1.7;
+  line-height: 1.6;
   margin-bottom: 2rem;
-  font-size: 0.95rem;
+  font-size: 1rem;
 }
 
 .contact-details {
@@ -82,75 +86,136 @@
 .contact-detail-item {
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
+  gap: 0.25rem;
 }
 
 .detail-label {
   font-size: 0.7rem;
   letter-spacing: 2px;
   color: var(--text-secondary);
-  text-transform: uppercase;
-}
-
-.contact-detail-item > span:last-child {
-  font-size: 0.95rem;
+  font-weight: 600;
 }
 
 .contact-apply-note {
   display: flex;
-  gap: 1rem;
   align-items: flex-start;
-  padding: 1.25rem;
+  gap: 1rem;
+  padding: 1.2rem;
   border-radius: 8px;
+  border: 1px solid var(--border-color);
 }
 
-.contact-apply-note svg { flex-shrink: 0; margin-top: 2px; color: var(--text-secondary); }
-.contact-apply-note p { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; margin: 0; }
+.contact-apply-note svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: white;
+}
 
-/* ─── Form ─── */
+.contact-apply-note p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* ─── Form Container ─── */
 .contact-form {
-  border-radius: 12px;
   padding: 2rem;
+  border-radius: 16px;
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  gap: 1.25rem;
+  border: 1px solid var(--border-color);
 }
 
+/* Step Indicator & Progress Bar */
+.form-steps-indicator {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.steps-progress-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: white;
+  transition: width 0.35s ease;
+  border-radius: 10px;
+}
+
+.steps-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+  font-weight: 600;
+}
+
+.steps-labels span.active {
+  color: white;
+}
+
+/* Step Content */
+.step-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.step-section-title {
+  font-size: 0.8rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+/* Type selector buttons */
 .type-selector {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.5rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
 }
 
 .type-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.3rem;
-  padding: 0.7rem 0.5rem;
-  border-radius: 6px;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.85rem 0.5rem;
+  border-radius: 10px;
   border: 1px solid var(--border-color);
   color: var(--text-secondary);
-  font-size: 0.75rem;
+  font-size: 0.82rem;
+  font-weight: 600;
   transition: all 0.2s;
-  cursor: pointer;
+  background: rgba(255, 255, 255, 0.02);
 }
 
-.type-btn:hover { color: white; border-color: white; }
-
+.type-btn:hover,
 .type-btn.active {
-  background: rgba(255,255,255,0.1);
   border-color: white;
   color: white;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .type-desc {
   font-size: 0.8rem;
   color: var(--text-secondary);
   letter-spacing: 0.5px;
-  margin: -0.5rem 0 0;
+  margin-top: -0.25rem;
 }
 
+/* Inputs & Labels */
 .form-row-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -165,16 +230,19 @@
   letter-spacing: 1.5px;
   text-transform: uppercase;
   color: var(--text-secondary);
+  width: 100%;
 }
 
 .contact-form input,
 .contact-form textarea {
-  background: rgba(255,255,255,0.04);
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--border-color);
-  border-radius: 5px;
+  border-radius: 8px;
   color: var(--text-primary);
-  padding: 0.7rem 0.9rem;
-  font-size: 0.93rem;
+  padding: 0.75rem 0.9rem;
+  font-size: 0.95rem;
   font-family: inherit;
   outline: none;
   transition: border-color 0.2s;
@@ -184,28 +252,10 @@
 .contact-form input:focus,
 .contact-form textarea:focus {
   border-color: white;
+  background: rgba(255, 255, 255, 0.08);
 }
 
-.btn-submit {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.6rem;
-  padding: 0.9rem;
-  background: white;
-  color: black;
-  font-size: 0.95rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-  border-radius: 6px;
-  transition: opacity 0.2s;
-  margin-top: 0.5rem;
-}
-
-.btn-submit:hover:not(:disabled) { opacity: 0.88; }
-.btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
-
-/* ─── Genre Selector Pills ─── */
+/* Genre Selector Pills */
 .genre-selector-pills {
   margin-top: 0.4rem;
 }
@@ -220,12 +270,13 @@
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.15);
   color: var(--text-secondary);
-  font-size: 0.73rem;
-  padding: 0.2rem 0.55rem;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.6rem;
   border-radius: 12px;
   cursor: pointer;
   font-family: inherit;
   transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .genre-pill-btn:hover {
@@ -241,9 +292,116 @@
   font-weight: 700;
 }
 
-/* ─── Responsive ─── */
+/* Step Navigation Buttons */
+.step-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.step-actions.dual {
+  justify-content: space-between;
+}
+
+.btn-prev {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-prev:hover {
+  color: white;
+  border-color: white;
+}
+
+.btn-next {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.4rem;
+  background: white;
+  color: black;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-next:hover {
+  opacity: 0.9;
+}
+
+.btn-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1.4rem;
+  background: white;
+  color: black;
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  border-radius: 8px;
+  transition: opacity 0.2s;
+  cursor: pointer;
+}
+
+.btn-submit:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.btn-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ─── Mobile Responsiveness ─── */
 @media (max-width: 860px) {
-  .contact-layout { grid-template-columns: 1fr; }
-  .type-selector { grid-template-columns: repeat(2, 1fr); }
-  .form-row-2 { grid-template-columns: 1fr; }
+  .contact-layout {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .contact-form {
+    padding: 1.25rem;
+  }
+
+  .form-row-2 {
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+  }
+
+  .type-selector {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+
+  .type-btn {
+    padding: 0.7rem 0.4rem;
+    font-size: 0.78rem;
+  }
+
+  .steps-labels {
+    font-size: 0.65rem;
+  }
+
+  .contact-form input,
+  .contact-form textarea {
+    font-size: 16px; /* Prevents auto zoom on iOS Safari */
+    padding: 0.7rem 0.8rem;
+  }
 }

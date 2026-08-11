@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Mic2, Calendar, LogOut, Plus, Pencil, Trash2, X, Check, Star, Mail, CheckCircle, Clock, XCircle, Home, Image as ImageIcon, LayoutDashboard, Eye, MessageSquare, Bell, Music } from 'lucide-react';
+import { Mic2, Calendar, LogOut, Plus, Pencil, Trash2, X, Check, Star, Mail, CheckCircle, Clock, XCircle, Home, Image as ImageIcon, LayoutDashboard, Eye, MessageSquare, Bell, Music, Menu } from 'lucide-react';
 import './Admin.css';
 
 const ADMIN_PASSWORD_KEY = 'mabrinhenhe_admin_pw';
@@ -451,6 +451,7 @@ const Admin = () => {
   const [loginInput, setLoginInput] = useState('');
   const [loginError, setLoginError] = useState('');
   const [tab, setTab] = useState('dashboard');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [artists, setArtists] = useState([]);
   const [events, setEvents] = useState([]);
   const [contacts, setContacts] = useState([]);
@@ -580,10 +581,24 @@ const Admin = () => {
   }
 
   // ── Dashboard ──
+  const navTo = (t) => { setTab(t); setSidebarOpen(false); };
+
   return (
     <div className="admin-page">
+      {/* Mobile Topbar */}
+      <div className="admin-mobile-topbar">
+        <button className="admin-hamburger" onClick={() => setSidebarOpen(o => !o)} aria-label="Menu">
+          {sidebarOpen ? <X size={22}/> : <Menu size={22}/>}
+        </button>
+        <span className="admin-mobile-title">ADMIN — Mabrinhenhe</span>
+        <button className="admin-hamburger" onClick={handleLogout} title="Sair"><LogOut size={20}/></button>
+      </div>
+
+      {/* Sidebar Overlay (mobile) */}
+      {sidebarOpen && <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />}
+
       {/* Sidebar */}
-      <aside className="admin-sidebar glass">
+      <aside className={`admin-sidebar glass${sidebarOpen ? ' sidebar-open' : ''}`}>
         <div className="sidebar-brand">
           <img src="/MABRILOGO.png" alt="Mabrinhenhe Logo" className="admin-sidebar-logo" />
           <div>
@@ -592,25 +607,25 @@ const Admin = () => {
           </div>
         </div>
         <nav className="sidebar-nav">
-          <a href="/" className="sidebar-home-link"><Home size={18}/> Ver Site Principal</a>
+          <a href="/" className="sidebar-home-link" onClick={() => setSidebarOpen(false)}><Home size={18}/> Ver Site Principal</a>
           <div style={{ height: '1px', background: 'var(--border-color)', margin: '0.5rem 0' }} />
-          <button className={tab === 'dashboard' ? 'active' : ''} onClick={() => setTab('dashboard')}><LayoutDashboard size={18}/> Dashboard</button>
-          <button className={tab === 'visits' ? 'active' : ''} onClick={() => setTab('visits')}>
-            <Eye size={18}/> Registos de Visitas ({stats.visits || 0})
+          <button className={tab === 'dashboard' ? 'active' : ''} onClick={() => navTo('dashboard')}><LayoutDashboard size={18}/> Dashboard</button>
+          <button className={tab === 'visits' ? 'active' : ''} onClick={() => navTo('visits')}>
+            <Eye size={18}/> Visitas ({stats.visits || 0})
           </button>
-          <button className={tab === 'artists' ? 'active' : ''} onClick={() => setTab('artists')}><Mic2 size={18}/> Artistas</button>
-          <button className={tab === 'events' ? 'active' : ''} onClick={() => setTab('events')}><Calendar size={18}/> Eventos</button>
-          <button className={tab === 'tracks' ? 'active' : ''} onClick={() => setTab('tracks')}><Music size={18}/> Músicas ({tracks.length})</button>
-          <button className={tab === 'gallery' ? 'active' : ''} onClick={() => setTab('gallery')}><ImageIcon size={18}/> Galeria</button>
-          <button className={tab === 'contacts' ? 'active' : ''} onClick={() => setTab('contacts')}>
+          <button className={tab === 'artists' ? 'active' : ''} onClick={() => navTo('artists')}><Mic2 size={18}/> Artistas</button>
+          <button className={tab === 'events' ? 'active' : ''} onClick={() => navTo('events')}><Calendar size={18}/> Eventos</button>
+          <button className={tab === 'tracks' ? 'active' : ''} onClick={() => navTo('tracks')}><Music size={18}/> Músicas ({tracks.length})</button>
+          <button className={tab === 'gallery' ? 'active' : ''} onClick={() => navTo('gallery')}><ImageIcon size={18}/> Galeria</button>
+          <button className={tab === 'contacts' ? 'active' : ''} onClick={() => navTo('contacts')}>
             <Mail size={18}/> Candidaturas
             {contacts.filter(c => c.status === 'pendente').length > 0 && (
-              <span style={{ marginLeft: 'auto', background: 'white', color: 'black', borderRadius: '20px', padding: '0 6px', fontSize: '0.7rem', fontWeight: 700 }}>
+              <span className="sidebar-badge">
                 {contacts.filter(c => c.status === 'pendente').length}
               </span>
             )}
           </button>
-          <button className={tab === 'subscribers' ? 'active' : ''} onClick={() => setTab('subscribers')}>
+          <button className={tab === 'subscribers' ? 'active' : ''} onClick={() => navTo('subscribers')}>
             <Bell size={18}/> Subscritores ({subscribers.length})
           </button>
         </nav>
@@ -789,15 +804,15 @@ const Admin = () => {
                       <tr><td colSpan={5} className="empty-row">Nenhum artista. Clique em "Novo Artista".</td></tr>
                     ) : artists.map(a => (
                       <tr key={a._id}>
-                        <td>
+                        <td data-label="Foto">
                           {a.imageUrl
                             ? <img src={a.imageUrl} alt={a.name} style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover', border: '1px solid #444' }} />
                             : <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', color: '#666' }}>N/A</div>
                           }
                         </td>
-                        <td><strong>{a.name}</strong></td>
-                        <td>{a.genre}</td>
-                        <td>{a.featured ? <Star size={16} fill="white"/> : '—'}</td>
+                        <td data-label="Nome"><strong>{a.name}</strong></td>
+                        <td data-label="Género">{a.genre}</td>
+                        <td data-label="Destaque">{a.featured ? <Star size={16} fill="white"/> : '—'}</td>
                         <td className="actions-cell">
                           <button className="icon-btn edit" onClick={() => setArtistModal(a)}><Pencil size={15}/></button>
                           <button className="icon-btn delete" onClick={() => deleteArtist(a._id)}><Trash2 size={15}/></button>
@@ -828,16 +843,16 @@ const Admin = () => {
                       <tr><td colSpan={6} className="empty-row">Nenhum evento. Clique em "Novo Evento".</td></tr>
                     ) : events.map(ev => (
                       <tr key={ev._id}>
-                        <td>
+                        <td data-label="Cartaz">
                           {ev.imageUrl
                             ? <img src={ev.imageUrl} alt={ev.title} style={{ width: 56, height: 40, borderRadius: '4px', objectFit: 'cover', border: '1px solid #444' }} />
                             : <div style={{ width: 56, height: 40, borderRadius: '4px', background: 'rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.65rem', color: '#666' }}>S/FOTO</div>
                           }
                         </td>
-                        <td><strong>{ev.title}</strong></td>
-                        <td>{ev.date}</td>
-                        <td>{ev.location}</td>
-                        <td><span className={`status-badge ${ev.status}`}>{ev.status === 'upcoming' ? 'Próximo' : 'Passado'}</span></td>
+                        <td data-label="Título"><strong>{ev.title}</strong></td>
+                        <td data-label="Data">{ev.date}</td>
+                        <td data-label="Local">{ev.location}</td>
+                        <td data-label="Estado"><span className={`status-badge ${ev.status}`}>{ev.status === 'upcoming' ? 'Próximo' : 'Passado'}</span></td>
                         <td className="actions-cell">
                           <button className="icon-btn edit" onClick={() => setEventModal(ev)}><Pencil size={15}/></button>
                           <button className="icon-btn delete" onClick={() => deleteEvent(ev._id)}><Trash2 size={15}/></button>
