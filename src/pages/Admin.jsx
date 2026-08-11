@@ -575,10 +575,14 @@ const Admin = () => {
             />
             <button type="submit" className="btn-save" style={{width:'100%', marginTop:'1rem'}}>Entrar</button>
           </form>
+          <a href="/" className="login-back-home">
+            <Home size={14} /> Voltar ao Site Principal
+          </a>
         </div>
       </div>
     );
   }
+
 
   // ── Dashboard ──
   const navTo = (t) => { setTab(t); setSidebarOpen(false); };

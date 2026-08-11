@@ -37,6 +37,22 @@
   margin-bottom: 2rem;
 }
 
+.login-back-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1.5rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  letter-spacing: 1px;
+  transition: color 0.2s;
+}
+
+.login-back-home:hover {
+  color: var(--text-primary);
+}
+
 .login-box input[type="password"] {
   width: 100%;
   background: rgba(255,255,255,0.05);
