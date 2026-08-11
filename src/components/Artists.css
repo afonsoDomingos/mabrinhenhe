@@ -1,0 +1,103 @@
+.artists-section {
+  padding: 8rem 0 5rem;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.section-header h2 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  letter-spacing: 4px;
+  margin-bottom: 1rem;
+  background: linear-gradient(to right, #ffffff, #888888);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.section-header p {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+.artists-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.artist-card {
+  padding: 2rem;
+  border-radius: 8px;
+  position: relative;
+  transition: border-color 0.3s ease;
+}
+
+.artist-card:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.artist-card.featured {
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.featured-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  border: 1px solid rgba(255,255,255,0.5);
+  padding: 0.2rem 0.6rem;
+  border-radius: 2px;
+  color: var(--text-secondary);
+}
+
+.artist-icon {
+  margin-bottom: 1.5rem;
+  color: var(--text-secondary);
+}
+
+.artist-card h3 {
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.genre {
+  display: inline-block;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.75rem;
+  width: 100%;
+}
+
+.artist-card p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.artist-btn {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.artist-btn:hover {
+  border-color: var(--text-primary);
+  background: rgba(255,255,255,0.05);
+}
