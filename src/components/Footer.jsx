@@ -6,6 +6,7 @@ const Footer = () => (
   <footer className="footer">
     <div className="container footer-inner">
       <div className="footer-brand">
+        <img src="/MABRILOGO.png" alt="Mabrinhenhe Logo" className="footer-logo-img" />
         <h3>MABRINHENHE</h3>
         <p>ENTRETENIMENTO</p>
         <span>Província de Gaza, Moçambique</span>

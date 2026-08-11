@@ -189,6 +189,7 @@ const Admin = () => {
     return (
       <div className="admin-login">
         <div className="login-box glass">
+          <img src="/MABRILOGO.png" alt="Mabrinhenhe Logo" className="admin-login-logo" />
           <h1>MABRINHENHE</h1>
           <p>Painel de Administração</p>
           <form onSubmit={handleLogin}>
@@ -213,8 +214,11 @@ const Admin = () => {
       {/* Sidebar */}
       <aside className="admin-sidebar glass">
         <div className="sidebar-brand">
-          <span>ADMIN</span>
-          <small>Mabrinhenhe</small>
+          <img src="/MABRILOGO.png" alt="Mabrinhenhe Logo" className="admin-sidebar-logo" />
+          <div>
+            <span>ADMIN</span>
+            <small>Mabrinhenhe</small>
+          </div>
         </div>
         <nav className="sidebar-nav">
           <button className={tab === 'artists' ? 'active' : ''} onClick={() => setTab('artists')}><Mic2 size={18}/> Artistas</button>

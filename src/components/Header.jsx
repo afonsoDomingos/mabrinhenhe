@@ -22,7 +22,10 @@ const Header = () => {
     <header className={`header glass ${scrolled ? 'scrolled' : ''}`}>
       <div className="container header-container">
         <button className="logo-btn logo" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-          MABRINHENHE <span>ENTRETENIMENTO</span>
+          <img src="/MABRILOGO.png" alt="Mabrinhenhe Logo" className="header-logo-img" />
+          <div className="logo-text">
+            MABRINHENHE <span>ENTRETENIMENTO</span>
+          </div>
         </button>
 
         <nav className={`nav ${isOpen ? 'nav-open' : ''}`}>
