@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mic2 } from 'lucide-react';
+import { Mic2, ArrowRight, Globe, Music, Video, Share2 } from 'lucide-react';
 import './Artists.css';
 
 const Artists = ({ onSelectArtist }) => {
@@ -52,22 +52,95 @@ const Artists = ({ onSelectArtist }) => {
                 key={artist._id}
                 className={`artist-card glass ${artist.featured ? 'featured' : ''}`}
                 variants={cardVariants}
-                whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
+                whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
                 onClick={() => onSelectArtist && onSelectArtist(artist._id)}
                 style={{ cursor: 'pointer' }}
               >
                 {artist.featured && <span className="featured-badge">DESTAQUE</span>}
-                {artist.imageUrl ? (
-                  <img src={artist.imageUrl} alt={artist.name} className="artist-img" />
-                ) : (
-                  <div className="artist-avatar-placeholder">
-                    <Mic2 size={40} />
-                  </div>
-                )}
+                <div className="artist-card-header">
+                  {artist.imageUrl ? (
+                    <img src={artist.imageUrl} alt={artist.name} className="artist-img" />
+                  ) : (
+                    <div className="artist-avatar-placeholder">
+                      <Mic2 size={36} />
+                    </div>
+                  )}
+                </div>
+
                 <div className="artist-info">
                   <h3>{artist.name}</h3>
                   <span className="artist-genre">{artist.genre}</span>
                   <p className="artist-desc">{artist.description}</p>
+                </div>
+
+                <div className="artist-card-footer">
+                  {/* Social Icons Quick Bar */}
+                  <div className="artist-card-socials">
+                    {artist.instagram && (
+                      <a
+                        href={artist.instagram}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="social-icon-btn instagram"
+                        title="Instagram"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Globe size={15} />
+                      </a>
+                    )}
+                    {artist.tiktok && (
+                      <a
+                        href={artist.tiktok}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="social-icon-btn tiktok"
+                        title="TikTok"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Music size={15} />
+                      </a>
+                    )}
+                    {artist.youtube && (
+                      <a
+                        href={artist.youtube}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="social-icon-btn youtube"
+                        title="YouTube"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Video size={15} />
+                      </a>
+                    )}
+                    {artist.spotify && (
+                      <a
+                        href={artist.spotify}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="social-icon-btn spotify"
+                        title="Spotify"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Music size={15} />
+                      </a>
+                    )}
+                    {artist.facebook && (
+                      <a
+                        href={artist.facebook}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="social-icon-btn facebook"
+                        title="Facebook"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Share2 size={15} />
+                      </a>
+                    )}
+                  </div>
+
+                  <span className="view-profile-link">
+                    Ver Perfil <ArrowRight size={14} />
+                  </span>
                 </div>
               </motion.div>
             ))}
